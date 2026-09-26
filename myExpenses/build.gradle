@@ -32,6 +32,9 @@ android {
     useLibrary 'android.test.base'
 
     defaultConfig {
+        // personal fork: build with -PUNLOCK=true to run as if a Professional licence were present.
+        // Without the flag, this source builds stock, licence-checked behaviour.
+        buildConfigField "boolean", "UNLOCK_ALL", getPropertyIfDefined("UNLOCK", "false")
         applicationId "org.totschnig.myexpenses"
         minSdkVersion project.minSdkVersion
         targetSdkVersion project.targetSdkVersion

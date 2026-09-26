@@ -128,7 +128,7 @@ open class LicenceHandler(
         isEnabledFor(feature.licenceStatus) || addOnFeatures.contains(feature)
 
     open fun isEnabledFor(licenceStatus: LicenceStatus) =
-        (this.licenceStatus?.compareTo(licenceStatus) ?: -1) >= 0
+        BuildConfig.UNLOCK_ALL || (this.licenceStatus?.compareTo(licenceStatus) ?: -1) >= 0
 
     val isUpgradeable: Boolean
         get() = licenceStatus?.isUpgradeable != false
@@ -140,6 +140,9 @@ open class LicenceHandler(
             hasOurLicence = true
         }
         restoreAddOnFeatures()
+        if (BuildConfig.UNLOCK_ALL && this.licenceStatus == null) {
+            this.licenceStatus = LicenceStatus.PROFESSIONAL
+        }
     }
 
     fun update() {
