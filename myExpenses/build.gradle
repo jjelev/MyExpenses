@@ -70,8 +70,9 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-project.txt'
             //signingConfig signingConfigs.release
-            manifestPlaceholders["appName"] = "@string/app_name"
-            applicationIdSuffix ""
+            // personal fork: side-by-side channels, e.g. -PID_SUFFIX=.dev -PAPP_NAME="My Expenses Dev"
+            manifestPlaceholders["appName"] = getPropertyIfDefined("APP_NAME", "@string/app_name")
+            applicationIdSuffix getPropertyIfDefined("ID_SUFFIX", "")
             //ndk.debugSymbolLevel = 'FULL'
         }
         debug {
