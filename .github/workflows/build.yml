@@ -1,0 +1,180 @@
+# Two channels from one repo:
+#   branch main -> "My Expenses"      org.totschnig.myexpenses      GitHub release      (daily use)
+#   branch dev  -> "My Expenses Dev"  org.totschnig.myexpenses.dev  GitHub pre-release  (testing)
+#
+# - Every push to main or dev builds and publishes that channel.
+# - A daily job rebases main (and dev on top of main) onto the newest upstream tag and
+#   force-pushes; those pushes trigger the builds. On conflicts it opens an issue instead.
+# - Secrets: KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD, PUSH_TOKEN
+#   (PUSH_TOKEN = fine-grained PAT for this repo with Contents + Workflows read/write;
+#    needed because the default token may not rewrite commits touching workflow files
+#    and its pushes would not trigger the build.)
+name: Build
+
+on:
+  push:
+    branches: [main, dev]
+    paths-ignore: ["CLAUDE.md"]
+  schedule:
+    - cron: "17 4 * * *"
+  workflow_dispatch:
+    inputs:
+      rebuild:
+        description: "Also rebuild without new commits"
+        type: choice
+        options: [none, main, dev, both]
+        default: none
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  UPSTREAM: https://github.com/mtotschnig/MyExpenses.git
+
+jobs:
+  upstream:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    concurrency: upstream-sync
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+          token: ${{ secrets.PUSH_TOKEN }}
+
+      - name: Rebase onto newest upstream tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add upstream "$UPSTREAM"
+          git fetch --quiet upstream --tags
+          git fetch --quiet origin
+
+          LATEST=$(git tag -l 'r[0-9]*' | sort -V | tail -1)
+          BASE=$(git describe --tags --abbrev=0 --match 'r[0-9]*' origin/main)
+          echo "upstream latest: $LATEST, main is based on: $BASE"
+          [ "$LATEST" = "$BASE" ] && { echo "Nothing new upstream."; exit 0; }
+
+          OLD_MAIN=$(git rev-parse origin/main)
+          git switch -C main origin/main
+          if ! git rebase --onto "$LATEST" "$BASE" main; then
+            FILES=$(git diff --name-only --diff-filter=U | sed 's/^/- /')
+            git rebase --abort
+            gh issue create --title "Upstream $LATEST: main needs a manual rebase" \
+              --body "$(printf 'Conflicting files:\n%s\n\nIn Android Studio terminal (or ask Claude Code):\n\n    git fetch upstream --tags\n    git switch main\n    git rebase --onto %s %s main\n    # resolve, then:\n    git switch dev && git rebase --onto main %s dev\n    git push --force-with-lease origin main dev\n' "$FILES" "$LATEST" "$BASE" "$OLD_MAIN")"
+            exit 1
+          fi
+          PUSH="main"
+
+          if git rev-parse -q --verify origin/dev >/dev/null; then
+            git switch -C dev origin/dev
+            if git rebase --onto main "$OLD_MAIN" dev; then
+              PUSH="$PUSH dev"
+            else
+              git rebase --abort
+              gh issue create --title "Upstream $LATEST: dev needs a manual rebase" \
+                --body "main was rebased onto $LATEST automatically; dev conflicts. Locally: git fetch origin && git switch dev && git rebase --onto origin/main $OLD_MAIN dev && git push --force-with-lease origin dev"
+            fi
+          fi
+          git push --force-with-lease origin $PUSH
+
+  build:
+    if: >-
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.rebuild != 'none')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        branch: >-
+          ${{ fromJSON(github.event_name == 'push' && format('["{0}"]', github.ref_name)
+              || github.event.inputs.rebuild == 'both' && '["main","dev"]'
+              || format('["{0}"]', github.event.inputs.rebuild)) }}
+    concurrency:
+      group: build-${{ matrix.branch }}
+      cancel-in-progress: true      # a newer push to the same branch supersedes an older build
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.branch }}
+          fetch-depth: 0
+
+      - name: Work out channel and version
+        id: v
+        run: |
+          set -euo pipefail
+          git fetch --quiet "$UPSTREAM" 'refs/tags/r*:refs/tags/r*'
+          BASE=$(git describe --tags --abbrev=0 --match 'r[0-9]*')
+          UPSTREAM_VERSION=$(grep -oP "versionName = '\K[^']+" build.gradle)
+          if [ "${{ matrix.branch }}" = main ]; then CHANNEL=daily; else CHANNEL=dev; fi
+          VERSION="${UPSTREAM_VERSION}-${CHANNEL}.${GITHUB_RUN_NUMBER}"
+          # shown in the app's About screen and matched by Obtainium.
+          # versionCode is left alone on purpose: the app's upgrade/migration logic depends on it.
+          sed -i "s/versionName = '[^']*'/versionName = '${VERSION}'/" build.gradle
+          { echo "base=$BASE"; echo "channel=$CHANNEL"; echo "version=$VERSION"; } >> "$GITHUB_OUTPUT"
+          echo "Building $CHANNEL $VERSION on upstream $BASE"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build universal release APK
+        run: |
+          # UNLOCK is a build flag: this source builds stock behaviour unless it is passed.
+          export ORG_GRADLE_PROJECT_UNLOCK=true
+          if [ "${{ steps.v.outputs.channel }}" = dev ]; then
+            export ORG_GRADLE_PROJECT_ID_SUFFIX=".dev"             # installs next to the daily app
+            export ORG_GRADLE_PROJECT_APP_NAME="My Expenses Dev"    # launcher label
+          fi
+          ./gradlew --no-daemon myExpenses:packageExternReleaseUniversalApk
+
+      - name: Sign
+        env:
+          KEYSTORE_B64: ${{ secrets.KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          APK=$(find myExpenses/build/outputs -name '*universal*.apk' | head -1)
+          echo "Built: $APK"
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          "$BT/zipalign" -f -p 4 "$APK" "$RUNNER_TEMP/aligned.apk"
+          OUT="MyExpenses-${{ steps.v.outputs.version }}.apk"
+          "$BT/apksigner" sign --ks "$RUNNER_TEMP/release.jks" --ks-pass env:KS_PASS \
+            --ks-key-alias "$KEY_ALIAS" --key-pass env:KEY_PASS --out "$OUT" "$RUNNER_TEMP/aligned.apk"
+          "$BT/apksigner" verify --print-certs "$OUT" | head -3
+          rm "$RUNNER_TEMP/release.jks"
+          echo "APK_OUT=$OUT" >> "$GITHUB_ENV"
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          NOTES=$(printf 'Upstream %s plus personal commits:\n\n%s\n' "${{ steps.v.outputs.base }}" \
+                  "$(git log --no-merges --format='- %s' "${{ steps.v.outputs.base }}"..HEAD)")
+          PRE=""; [ "${{ steps.v.outputs.channel }}" = dev ] && PRE="--prerelease"
+          gh release create "${{ steps.v.outputs.version }}" "$APK_OUT" $PRE \
+            --target "$(git rev-parse HEAD)" \
+            --title "My Expenses ${{ steps.v.outputs.version }}" \
+            --notes "$NOTES"
+
+      - name: Keep only the 5 newest dev pre-releases
+        if: steps.v.outputs.channel == 'dev'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release list --limit 100 --json tagName,isPrerelease,createdAt \
+            --jq '[.[] | select(.isPrerelease)] | sort_by(.createdAt) | reverse | .[5:] | .[].tagName' |
+          while read -r t; do gh release delete "$t" --yes --cleanup-tag; done
