@@ -124,7 +124,10 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
-      - uses: android-actions/setup-android@v3
+      # ubuntu-latest ships a preinstalled Android SDK (ANDROID_HOME) with licenses
+      # accepted; AGP downloads any missing platform/build-tools package itself during
+      # the Gradle build. android-actions/setup-android@v3 is not used here: it forces
+      # `sdkmanager tools`, a legacy package Google removed, which now hard-fails.
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Build universal release APK
