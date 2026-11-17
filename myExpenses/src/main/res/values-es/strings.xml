@@ -595,7 +595,6 @@
     <string name="licence_has_expired_n_days">Su licencia profesional expiró hace %d días.</string>
     <string name="gdpr_consent_button_no">Pagar por la versión libre de anuncios</string>
     <string name="sort_order">Orden de clasificación</string>
-    <string name="navigation_drawer_accounts_title">Administrar cuentas</string>
     <string name="pref_sync_wifi_only_summary">Sincronizar sólo con Wi-Fi</string>
     <string name="pref_sync_changes_immediately_summary">Escribir los cambios locales inmediatamente en el servicio de sincronización</string>
     <string name="synchronization_postponed">Se pospone la sincronización.</string>
@@ -971,7 +970,6 @@
     <string name="budget_import_none_found">No se han encontrado presupuestos.</string>
     <string name="quick_search">Búsqueda rápida</string>
     <string name="complex_search">Búsqueda compleja</string>
-    <string name="menu_show_equivalent_value">Valor equivalente</string>
     <string name="initial_value">Valor inicial</string>
     <string name="enable_automatic_daily_exchange_rate_download">Descarga automática del tipo de cambio diario</string>
     <string name="price_history">Historial de precios</string>
@@ -1071,7 +1069,7 @@
     <string name="trade_matching_transaction_found">Se encontró una operación coincidente en la cuenta de financiación. Seleccione para vincular:</string>
     <string name="asset_quantity_at_price">%1$s a %2$s</string>
     <string name="contrib_feature_portfolio_tracking">Seguimiento de cartera</string>
-    <string name="premium_nudge_portfolio_message">Puedes gestionar una cartera gratis. Actualiza para gestionar varias carteras y desbloquear funciones de seguimiento avanzadas.</string>
+    <string name="premium_nudge_portfolio_message">Puedes gestionar una cartera gratis. Actualiza para gestionar varias carteras y desbloquear funciones avanzadas (%1$s).</string>
     <string name="rounding">Redondeo</string>
     <string name="parse_error_at_line">Error en la línea %1$d: %2$s</string>
     <plurals name="import_trades_missing_assets_message">
@@ -1091,4 +1089,25 @@
     <string name="service_starting">Iniciando…</string>
     <string name="trade_transfer">Transferencia</string>
     <string name="important_upgrade_information_heading">Información importante</string>
+    <string name="single_pane_view">Panel único</string>
+    <string name="split_pane_view">Vista dividida</string>
+    <string name="pref_tag_style_title">Estilo de etiqueta</string>
+    <string name="pref_tag_style_outline">Borde coloreado</string>
+    <string name="pref_tag_style_filled">Totalmente coloreado</string>
+    <string name="trade_additional_costs">Costes adicionales</string>
+    <string name="dialog_title_warning_delete_closed_account">¿Eliminar la cuenta cerrada?</string>
+    <string name="search_asset">Búsqueda de activo</string>
+    <string name="remap_update_value_date">También actualizar la Fecha de valor</string>
+    <string name="trade_add_cost">Añade coste</string>
+    <string name="help_floating_action_button">Botón de Acción Flotante</string>
+    <string name="search_fts_help_and">café té : encuentra transacciones con café y té</string>
+    <string name="search_fts_help_not">café -té : encuentra transacciones con café, pero sin té</string>
+    <string name="search_fts_help_or">café OR té : encuentra transacciones con café o té</string>
+    <string name="search_fts_help_phrase">\"café y té\" : encuentra la frase exacta \"café y té\"</string>
+    <string name="search_fts_help_prefix">caf* : encuentra palabras que empiezan con caf (p. ej. café, cafetería)</string>
+    <string name="search_fts_help_column">Añada un prefijo para restringir la búsqueda a una columna específica (p. ej. payee:supermercado, category:comida, tag:trabajo). Disponibles: \'comment\' (notas), \'payee\' (beneficiario), \'category\' (categoría), \'tag\' (etiquetas), \'ref\' (número de referencia)</string>
+    <string name="full_text_search">Búsqueda de texto completo</string>
+    <string name="search_full_text">Buscar en todos los campos</string>
+    <string name="search_fts_error_malformed">Operador de búsqueda incompleto o comillas sin cerrar</string>
+    <string name="parent_category">Categoría principal</string>
 </resources>

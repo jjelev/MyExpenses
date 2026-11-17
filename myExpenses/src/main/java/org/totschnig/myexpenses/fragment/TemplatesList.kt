@@ -36,7 +36,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
-import android.widget.AdapterView
 import android.widget.AdapterView.AdapterContextMenuInfo
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -57,6 +56,9 @@ import com.evernote.android.state.State
 import com.evernote.android.state.StateSaver
 import com.google.android.material.snackbar.Snackbar
 import eltos.simpledialogfragment.SimpleDialog
+import java.lang.ref.WeakReference
+import javax.inject.Inject
+import kotlin.math.absoluteValue
 import org.totschnig.myexpenses.MyApplication
 import org.totschnig.myexpenses.R
 import org.totschnig.myexpenses.activity.BaseActivity
@@ -66,26 +68,29 @@ import org.totschnig.myexpenses.activity.ManageTemplates
 import org.totschnig.myexpenses.activity.ProtectedFragmentActivity
 import org.totschnig.myexpenses.compose.transactions.COMMENT_SEPARATOR
 import org.totschnig.myexpenses.databinding.TemplatesListBinding
+import org.totschnig.myexpenses.db2.FLAG_EXPENSE
+import org.totschnig.myexpenses.db2.FLAG_INCOME
+import org.totschnig.myexpenses.db2.FLAG_TRANSFER
 import org.totschnig.myexpenses.db2.Repository
 import org.totschnig.myexpenses.db2.entities.Template
 import org.totschnig.myexpenses.db2.getCurrencyForAccount
 import org.totschnig.myexpenses.dialog.MessageDialogFragment
 import org.totschnig.myexpenses.model.ContribFeature
+import org.totschnig.myexpenses.model.ContribPayload
 import org.totschnig.myexpenses.model.CurrencyContext
 import org.totschnig.myexpenses.model.sort.Sort
 import org.totschnig.myexpenses.model.sort.Sort.Companion.preferredOrderByForTemplatesWithPlans
 import org.totschnig.myexpenses.preference.PrefKey
 import org.totschnig.myexpenses.provider.KEY_ACCOUNT_LABEL
 import org.totschnig.myexpenses.provider.KEY_AMOUNT
-import org.totschnig.myexpenses.db2.FLAG_EXPENSE
-import org.totschnig.myexpenses.db2.FLAG_INCOME
-import org.totschnig.myexpenses.db2.FLAG_TRANSFER
 import org.totschnig.myexpenses.provider.KEY_CATID
 import org.totschnig.myexpenses.provider.KEY_COLOR
 import org.totschnig.myexpenses.provider.KEY_COMMENT
 import org.totschnig.myexpenses.provider.KEY_CURRENCY
 import org.totschnig.myexpenses.provider.KEY_DATE
 import org.totschnig.myexpenses.provider.KEY_DEFAULT_ACTION
+import org.totschnig.myexpenses.provider.KEY_HAS_SEALED_ACCOUNT
+import org.totschnig.myexpenses.provider.KEY_HAS_SEALED_DEBT
 import org.totschnig.myexpenses.provider.KEY_INSTANCEID
 import org.totschnig.myexpenses.provider.KEY_ORIGINAL_AMOUNT
 import org.totschnig.myexpenses.provider.KEY_ORIGINAL_CURRENCY
@@ -95,13 +100,12 @@ import org.totschnig.myexpenses.provider.KEY_PAYEE_NAME
 import org.totschnig.myexpenses.provider.KEY_PLANID
 import org.totschnig.myexpenses.provider.KEY_PLAN_INFO
 import org.totschnig.myexpenses.provider.KEY_ROWID
-import org.totschnig.myexpenses.provider.KEY_SEALED
 import org.totschnig.myexpenses.provider.KEY_TEMPLATEID
 import org.totschnig.myexpenses.provider.KEY_TITLE
 import org.totschnig.myexpenses.provider.KEY_TRANSACTIONID
-import org.totschnig.myexpenses.provider.KEY_TYPE
 import org.totschnig.myexpenses.provider.KEY_TRANSFER_ACCOUNT
 import org.totschnig.myexpenses.provider.KEY_TRANSFER_ACCOUNT_LABEL
+import org.totschnig.myexpenses.provider.KEY_TYPE
 import org.totschnig.myexpenses.provider.KEY_UUID
 import org.totschnig.myexpenses.provider.SPLIT_CATID
 import org.totschnig.myexpenses.provider.TransactionProvider
@@ -128,17 +132,15 @@ import org.totschnig.myexpenses.viewmodel.PlanInstanceInfo
 import org.totschnig.myexpenses.viewmodel.TemplatesListViewModel
 import org.totschnig.myexpenses.viewmodel.data.RIGHT_ARROW
 import timber.log.Timber
-import java.io.Serializable
-import java.lang.ref.WeakReference
-import javax.inject.Inject
-import kotlin.math.absoluteValue
 
 const val KEY_INSTANCE = "instance"
 const val DIALOG_TAG_CONFIRM_CANCEL = "confirm_cancel"
 const val DIALOG_TAG_CONFIRM_RESET = "confirm_reset"
 const val DIALOG_TAG_CONFIRM_DELETE = "confirm_delete"
 
-class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Cursor?>,
+class TemplatesList :
+    SortableListFragment(),
+    LoaderManager.LoaderCallbacks<Cursor?>,
     SimpleDialog.OnDialogResultListener {
     private var popup: PopupMenu? = null
     override val menuResource: Int
@@ -198,7 +200,7 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         val ctx = requireActivity() as ProtectedFragmentActivity
         _binding = TemplatesListBinding.inflate(inflater, container, false)
@@ -207,55 +209,80 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
         mAdapter = MyAdapter(ctx)
         binding.list.adapter = mAdapter
         binding.list.emptyView = binding.empty
-        binding.list.setOnItemClickListener { _: AdapterView<*>?, _: View?, position: Int, id: Long ->
-            if (_templatesCursor == null || !templatesCursor.moveToPosition(position)) return@setOnItemClickListener
-            val isSealed = templatesCursor.getInt(KEY_SEALED) != 0
-            if (isSealed) {
-                ctx.showSnackBar(R.string.object_sealed)
-            }
-            if (templatesCursor.isNull(KEY_PLANID)) {
-                if (!isSealed) {
-                    if (isForeignExchangeTransfer(position)) {
-                        dispatchCreateInstanceEditDo(id)
-                    } else {
-                        val splitAtPosition = isSplitAtPosition(position)
-                        val defaultAction: Template.Action = enumValueOrDefault(
-                            templatesCursor.getString(KEY_DEFAULT_ACTION),
-                            Template.Action.SAVE
-                        )
-                        if (defaultAction == Template.Action.SAVE) {
-                            if (splitAtPosition) {
-                                requestSplitTransaction(longArrayOf(id))
-                            } else {
-                                dispatchCreateInstanceSaveDo(longArrayOf(id))
-                            }
-                        } else {
-                            if (splitAtPosition) {
-                                requestSplitTransaction(id)
-                            } else {
-                                dispatchCreateInstanceEditDo(id)
-                            }
-                        }
-                    }
-                }
-            } else {
-                if (isCalendarPermissionGranted) {
-                    val planMonthFragment = PlanMonthFragment.newInstance(
-                        templatesCursor.getString(KEY_TITLE),
-                        id,
-                        templatesCursor.getLong(KEY_PLANID),
-                        templatesCursor.getInt(KEY_COLOR), isSealed, prefHandler
-                    )
-                    if (!childFragmentManager.isStateSaved) {
-                        planMonthFragment.show(childFragmentManager, CALDROID_DIALOG_FRAGMENT_TAG)
-                    }
-                } else {
-                    ctx.requestCalendarPermission()
-                }
-            }
+        binding.list.setOnItemClickListener { _, _, position, id ->
+            onItemClick(position, id)
         }
         registerForContextualActionBar(binding.list)
         return binding.root
+    }
+
+    private fun onItemClick(position: Int, id: Long) {
+        val cursor = _templatesCursor ?: return
+        if (!cursor.moveToPosition(position)) return
+
+        val sealedAccount = cursor.getInt(KEY_HAS_SEALED_ACCOUNT) != 0
+        val sealedDebt = cursor.getInt(KEY_HAS_SEALED_DEBT) != 0
+        val isSealed = sealedAccount || sealedDebt
+
+        if (isSealed) {
+            val message = listOfNotNull(
+                if (sealedAccount) R.string.object_sealed else null,
+                if (sealedDebt) R.string.object_sealed_debt else null
+            ).joinToString(" ") { getText(it) }
+            (requireActivity() as ProtectedFragmentActivity).showSnackBar(message)
+        }
+
+        if (cursor.isNull(KEY_PLANID)) {
+            if (!isSealed) {
+                instantiateTemplate(id, position, cursor)
+            }
+        } else {
+            showPlanMonth(id, cursor, isSealed)
+        }
+    }
+
+    private fun instantiateTemplate(id: Long, position: Int, cursor: Cursor) {
+        if (isForeignExchangeTransfer(position)) {
+            dispatchCreateInstanceEditDo(id)
+            return
+        }
+        val splitAtPosition = isSplitAtPosition(position)
+        val defaultAction: Template.Action = enumValueOrDefault(
+            cursor.getString(KEY_DEFAULT_ACTION),
+            Template.Action.SAVE
+        )
+        val isSave = defaultAction == Template.Action.SAVE
+        when {
+            isSave && splitAtPosition -> requestSplitTransaction(
+                ContribPayload.InstantiateSplitTemplateSave(longArrayOf(id))
+            )
+
+            isSave -> dispatchCreateInstanceSaveDo(longArrayOf(id))
+
+            splitAtPosition -> requestSplitTransaction(
+                ContribPayload.InstantiateSplitTemplateEdit(id)
+            )
+
+            else -> dispatchCreateInstanceEditDo(id)
+        }
+    }
+
+    private fun showPlanMonth(id: Long, cursor: Cursor, isSealed: Boolean) {
+        if (isCalendarPermissionGranted) {
+            val planMonthFragment = PlanMonthFragment.newInstance(
+                cursor.getString(KEY_TITLE),
+                id,
+                cursor.getLong(KEY_PLANID),
+                cursor.getInt(KEY_COLOR),
+                isSealed,
+                prefHandler
+            )
+            if (!childFragmentManager.isStateSaved) {
+                planMonthFragment.show(childFragmentManager, CALDROID_DIALOG_FRAGMENT_TAG)
+            }
+        } else {
+            (requireActivity() as ProtectedFragmentActivity).requestCalendarPermission()
+        }
     }
 
     private val isCalendarPermissionGranted: Boolean
@@ -264,16 +291,27 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
     private fun bulkUpdateDefaultAction(
         itemIds: LongArray,
         action: Template.Action,
-        resultFeedBack: Int,
+        resultFeedBack: Int
     ) {
         viewModel.updateDefaultAction(itemIds, action).observe(
             viewLifecycleOwner
-        ) { result: Boolean -> showSnackbar(if (result) getString(resultFeedBack) else "Error while setting default action for template click") }
+        ) { result: Boolean ->
+            showSnackbar(
+                if (result) {
+                    getString(
+                        resultFeedBack
+                    )
+                } else {
+                    "Error while setting default action for template click"
+                }
+            )
+        }
     }
 
     override fun dispatchCommandMultiple(
         command: Int,
-        positions: SparseBooleanArray, itemIds: LongArray,
+        positions: SparseBooleanArray,
+        itemIds: LongArray
     ): Boolean {
         if (super.dispatchCommandMultiple(command, positions, itemIds)) {
             return true
@@ -299,7 +337,7 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
 
             R.id.DELETE_COMMAND -> {
                 MessageDialogFragment.newInstance(
-                    getString(R.string.dialog_title_warning_delete_template),  //TODO check if template
+                    getString(R.string.dialog_title_warning_delete_template),
                     resources.getQuantityString(
                         R.plurals.warning_delete_template,
                         itemIds.size,
@@ -323,7 +361,7 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
 
             R.id.CREATE_INSTANCE_SAVE_COMMAND -> {
                 if (hasSplitAtPositions(positions)) {
-                    requestSplitTransaction(itemIds)
+                    requestSplitTransaction(ContribPayload.InstantiateSplitTemplateSave(itemIds))
                 } else {
                     dispatchCreateInstanceSaveDo(itemIds)
                 }
@@ -343,7 +381,7 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
         val i: Intent
         if (command == R.id.CREATE_INSTANCE_EDIT_COMMAND) {
             if (isSplitAtPosition(menuInfo.position)) {
-                requestSplitTransaction(menuInfo.id)
+                requestSplitTransaction(ContribPayload.InstantiateSplitTemplateEdit(menuInfo.id))
             } else {
                 dispatchCreateInstanceEditDo(menuInfo.id)
             }
@@ -353,7 +391,7 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
             finishActionMode()
             i = Intent(activity, ExpenseEdit::class.java)
             i.putExtra(KEY_TEMPLATEID, menuInfo.id)
-            //TODO check what to do on Result
+            // TODO check what to do on Result
             startActivityForResult(i, EDIT_REQUEST)
             return true
         }
@@ -377,13 +415,12 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
      * calls [ProtectedFragmentActivity.contribFeatureRequested]
      * for feature [ContribFeature.SPLIT_TRANSACTION]
      *
-     * @param tag if tag holds a single long the new instance will be edited, if tag holds an array of longs
-     * new instances will be immediately saved for each
+     * @param payload either [ContribPayload.InstantiateSplitTemplateSave] or [ContribPayload.InstantiateSplitTemplateEdit]
      */
-    private fun requestSplitTransaction(tag: Serializable?) {
+    private fun requestSplitTransaction(payload: ContribPayload?) {
         (requireActivity() as ProtectedFragmentActivity).contribFeatureRequested(
             ContribFeature.SPLIT_TRANSACTION,
-            tag
+            payload
         )
     }
 
@@ -396,20 +433,28 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
             viewLifecycleOwner
         ) { successCount: Int ->
             showSnackbar(
-                if (successCount == 0) getString(R.string.save_transaction_error) else resources.getQuantityString(
-                    R.plurals.save_transaction_from_template_success,
-                    successCount,
-                    successCount
-                )
+                if (successCount ==
+                    0
+                ) {
+                    getString(R.string.save_transaction_error)
+                } else {
+                    resources.getQuantityString(
+                        R.plurals.save_transaction_from_template_success,
+                        successCount,
+                        successCount
+                    )
+                }
             )
         }
     }
 
     fun dispatchCreateInstanceEditDo(itemId: Long) {
-        startActivity(Intent(requireActivity(), ExpenseEdit::class.java).apply {
-            action = ExpenseEdit.ACTION_CREATE_FROM_TEMPLATE
-            putExtra(KEY_TEMPLATEID, itemId)
-        })
+        startActivity(
+            Intent(requireActivity(), ExpenseEdit::class.java).apply {
+                action = ExpenseEdit.ACTION_CREATE_FROM_TEMPLATE
+                putExtra(KEY_TEMPLATEID, itemId)
+            }
+        )
     }
 
     private fun dispatchCreateInstanceEdit(templateId: Long, instanceId: Long, date: Long) {
@@ -424,7 +469,8 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
     fun dispatchEditInstance(transactionId: Long?) {
         startActivityForResult(
             Intent(requireActivity(), ExpenseEdit::class.java)
-                .putExtra(KEY_ROWID, transactionId), EDIT_REQUEST
+                .putExtra(KEY_ROWID, transactionId),
+            EDIT_REQUEST
         )
     }
 
@@ -437,19 +483,21 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
         }
     }
 
-    override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor?> {
-        return if (id == SORTABLE_CURSOR) {
-            CursorLoader(
-                requireActivity(),
-                TransactionProvider.TEMPLATES_URI.buildUpon()
-                    .appendBooleanQueryParameter(TransactionProvider.QUERY_PARAMETER_WITH_PLAN_INFO)
-                    .build(),
-                null,
-                "$KEY_PARENTID IS NULL",
-                null,
-                preferredOrderByForTemplatesWithPlans(prefHandler, Sort.USAGES, prefHandler.collate)
-            )
-        } else throw IllegalArgumentException()
+    override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<Cursor?> = if (id ==
+        SORTABLE_CURSOR
+    ) {
+        CursorLoader(
+            requireActivity(),
+            TransactionProvider.TEMPLATES_URI.buildUpon()
+                .appendBooleanQueryParameter(TransactionProvider.QUERY_PARAMETER_WITH_PLAN_INFO)
+                .build(),
+            null,
+            "$KEY_PARENTID IS NULL",
+            null,
+            preferredOrderByForTemplatesWithPlans(prefHandler, Sort.USAGES, prefHandler.collate)
+        )
+    } else {
+        throw IllegalArgumentException()
     }
 
     override fun onLoadFinished(loader: Loader<Cursor?>, c: Cursor?) {
@@ -458,9 +506,14 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
             _templatesCursor = c
             invalidateCAB()
             hasPlans = false
-            if (isCalendarPermissionGranted && _templatesCursor != null && templatesCursor.moveToFirst()) {
-                val needToExpand =
-                    if (expandedHandled) ManageTemplates.NOT_CALLED else ctx.calledFromCalendarWithId
+            if (isCalendarPermissionGranted && _templatesCursor != null &&
+                templatesCursor.moveToFirst()
+            ) {
+                val needToExpand = if (expandedHandled) {
+                    ManageTemplates.NOT_CALLED
+                } else {
+                    ctx.calledFromCalendarWithId
+                }
                 var planMonthFragment: PlanMonthFragment? = null
                 while (!templatesCursor.isAfterLast) {
                     val planId = templatesCursor.getLong(KEY_PLANID)
@@ -474,7 +527,7 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
                             templateId,
                             planId,
                             templatesCursor.getInt(KEY_COLOR),
-                            templatesCursor.getInt(KEY_SEALED) != 0,
+                            templatesCursor.isSealed,
                             prefHandler
                         )
                     }
@@ -488,7 +541,7 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
                         ctx.showSnackBar(R.string.save_transaction_template_deleted)
                     }
                 }
-                //look for plans that we could possible relink
+                // look for plans that we could possibly relink
                 if (!repairTriggered && templatesCursor.moveToFirst()) {
                     val missingUuids = ArrayList<String>()
                     while (!templatesCursor.isAfterLast) {
@@ -507,7 +560,8 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
                     }
                     if (missingUuids.isNotEmpty()) {
                         RepairHandler(this).obtainMessage(
-                            0, missingUuids.toTypedArray()
+                            0,
+                            missingUuids.toTypedArray()
                         )
                             .sendToTarget()
                     }
@@ -556,7 +610,6 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
         snackbar.show()
     }
 
-
     fun dispatchDeleteDo(tag: LongArray) {
         showSnackbar(getString(R.string.progress_dialog_deleting))
         viewModel.deleteTemplates(tag, PermissionGroup.CALENDAR.hasPermission(requireContext()))
@@ -584,7 +637,9 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
     }
 
     private fun confirmDeleteTransactionsForPlanInstances(
-        planInstance: PlanInstanceInfo, dialogTag: String, title: Int,
+        planInstance: PlanInstanceInfo,
+        dialogTag: String,
+        title: Int
     ) {
         confirmDeleteTransactionsWithBundle(dialogTag, title) {
             putParcelable(KEY_INSTANCE, planInstance)
@@ -592,7 +647,9 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
     }
 
     private fun confirmDeleteTransactionsWithBundle(
-        dialogTag: String, title: Int, extras: Bundle.() -> Unit,
+        dialogTag: String,
+        title: Int,
+        extras: Bundle.() -> Unit
     ) {
         SimpleDialog.build()
             .title(title)
@@ -608,7 +665,6 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
             .neg(R.string.response_no)
             .show(this, dialogTag)
     }
-
 
     private fun dispatchCancelInstance(planInstance: PlanInstanceInfo) {
         if (planInstance.transactionId.let { it != null && it != 0L }) {
@@ -655,7 +711,6 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
                     )
                 }
             }
-
         }
     }
 
@@ -666,13 +721,13 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
         }
     }
 
-    override fun getSortOrderPrefKey(): PrefKey {
-        return PrefKey.SORT_ORDER_TEMPLATES
-    }
+    override fun getSortOrderPrefKey(): PrefKey = PrefKey.SORT_ORDER_TEMPLATES
 
-    //after orientation change, we need to restore the reference
+    // after orientation change, we need to restore the reference
     private val planMonthFragment: PlanMonthFragment?
-        get() = childFragmentManager.findFragmentByTag(CALDROID_DIALOG_FRAGMENT_TAG) as PlanMonthFragment?
+        get() = childFragmentManager.findFragmentByTag(
+            CALDROID_DIALOG_FRAGMENT_TAG
+        ) as PlanMonthFragment?
     private val plannerFragment: PlannerFragment?
         get() = childFragmentManager.findFragmentByTag(PLANNER_FRAGMENT_TAG) as PlannerFragment?
 
@@ -688,7 +743,7 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
 
         @SuppressLint("SetTextI18n")
         override fun bindView(view: View, context: Context, cursor: Cursor) {
-            val isSealed = cursor.getInt(KEY_SEALED) != 0
+            val isSealed = cursor.isSealed
             val doesHavePlan = !cursor.isNull(KEY_PLANID)
             val isTransfer = !cursor.isNull(KEY_TRANSFER_ACCOUNT)
             val tv1 = view.findViewById<TextView>(R.id.Amount)
@@ -713,33 +768,46 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
                 val account = cursor.getString(KEY_ACCOUNT_LABEL)
                 val transferAccount = cursor.getString(KEY_TRANSFER_ACCOUNT_LABEL)
 
-                val transfer = if (amount < 0) "$account $RIGHT_ARROW $transferAccount"
-                else "$transferAccount $RIGHT_ARROW $account"
+                val transfer = if (amount < 0) {
+                    "$account $RIGHT_ARROW $transferAccount"
+                } else {
+                    "$transferAccount $RIGHT_ARROW $account"
+                }
 
-                catText = if (catText.isEmpty()) transfer
-                else TextUtils.concat(catText, " (", transfer, ")")
+                catText = if (catText.isEmpty()) {
+                    transfer
+                } else {
+                    TextUtils.concat(catText, " (", transfer, ")")
+                }
             }
-            //TODO: simplify confer TemplateWidget
+            // TODO: simplify confer TemplateWidget
             var ssb: SpannableStringBuilder
             val comment = cursor.getStringOrNull(KEY_COMMENT)
 
             if (!comment.isNullOrEmpty()) {
                 ssb = SpannableStringBuilder(comment)
                 ssb.setSpan(StyleSpan(Typeface.ITALIC), 0, comment.length, 0)
-                catText = if (catText.isEmpty()) ssb else
+                catText = if (catText.isEmpty()) {
+                    ssb
+                } else {
                     TextUtils.concat(catText, COMMENT_SEPARATOR, ssb)
+                }
             }
             val payee = cursor.getStringOrNull(KEY_PAYEE_NAME)
             if (!payee.isNullOrEmpty()) {
                 ssb = SpannableStringBuilder(payee)
                 ssb.setSpan(UnderlineSpan(), 0, payee.length, 0)
-                catText = if (catText.isEmpty()) ssb else
+                catText = if (catText.isEmpty()) {
+                    ssb
+                } else {
                     TextUtils.concat(catText, COMMENT_SEPARATOR, ssb)
+                }
             }
             tv2.text = catText
             view.findViewById<TextView>(R.id.Title).text = cursor.getString(KEY_TITLE) +
-                    if (doesHavePlan)
-                        " (" + (cursor.getStringIfExists(KEY_PLAN_INFO)
+                if (doesHavePlan) {
+                    " (" + (
+                        cursor.getStringIfExists(KEY_PLAN_INFO)
                             ?: if (isCalendarPermissionGranted) {
                                 getString(R.string.plan_event_deleted)
                             } else {
@@ -747,12 +815,21 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
                                     context,
                                     R.string.calendar_permission_required
                                 )
-                            }) + ")"
-                    else ""
+                            }
+                        ) + ")"
+                } else {
+                    ""
+                }
 
             val planImage = view.findViewById<ImageView>(R.id.Plan)
             planImage.setImageResource(
-                if (isSealed) R.drawable.ic_lock else if (doesHavePlan) R.drawable.ic_event else R.drawable.ic_menu_template
+                if (isSealed) {
+                    R.drawable.ic_lock
+                } else if (doesHavePlan) {
+                    R.drawable.ic_event
+                } else {
+                    R.drawable.ic_menu_template
+                }
             )
             planImage.contentDescription =
                 getString(if (doesHavePlan) R.string.plan else R.string.template)
@@ -814,7 +891,7 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
         count: Int,
         foreignExchangeTransfer: Boolean,
         hasPlan: Boolean,
-        hasSealed: Boolean,
+        hasSealed: Boolean
     ) {
         menu.findItem(R.id.CREATE_INSTANCE_SAVE_COMMAND).isVisible =
             !foreignExchangeTransfer && !hasPlan and !hasSealed
@@ -835,17 +912,21 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
         return false
     }
 
-    private fun isPlan(position: Int): Boolean {
-        return if (_templatesCursor != null && templatesCursor.moveToPosition(position)) {
-            !templatesCursor.isNull(KEY_PLANID)
-        } else false
+    private fun isPlan(position: Int): Boolean = if (_templatesCursor != null &&
+        templatesCursor.moveToPosition(
+            position
+        )
+    ) {
+        !templatesCursor.isNull(KEY_PLANID)
+    } else {
+        false
     }
 
-    private fun isSealed(position: Int): Boolean {
-        return if (_templatesCursor != null && templatesCursor.moveToPosition(position)) {
-            templatesCursor.getInt(KEY_SEALED) == 1
-        } else false
-    }
+    private fun isSealed(position: Int): Boolean = _templatesCursor != null &&
+        templatesCursor.moveToPosition(position) && templatesCursor.isSealed
+
+    private val Cursor.isSealed
+        get() = getInt(KEY_HAS_SEALED_ACCOUNT) == 1 || getInt(KEY_HAS_SEALED_DEBT) == 1
 
     @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -893,6 +974,7 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
                 )
 
                 DIALOG_TAG_CONFIRM_RESET -> viewModel.reset(extras.getParcelable(KEY_INSTANCE)!!)
+
                 DIALOG_TAG_CONFIRM_CANCEL -> viewModel.cancel(extras.getParcelable(KEY_INSTANCE)!!)
             }
         }
@@ -903,7 +985,7 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
         view: View,
         planInstance: PlanInstanceInfo,
         onClick: (() -> Boolean)?,
-        handleMenuItemClick: ((Int) -> Boolean)?,
+        handleMenuItemClick: ((Int) -> Boolean)?
     ) {
         view.setOnClickListener {
             if (popup != null) {
@@ -924,7 +1006,8 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
                     when (item.itemId) {
                         R.id.CREATE_PLAN_INSTANCE_EDIT_COMMAND -> {
                             dispatchCreateInstanceEdit(
-                                planInstance.templateId, planInstance.instanceId!!,
+                                planInstance.templateId,
+                                planInstance.instanceId!!,
                                 planInstance.date!! / 1000
                             )
                             true
@@ -933,7 +1016,6 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
                         R.id.CREATE_PLAN_INSTANCE_SAVE_COMMAND -> {
                             dispatchCreateInstanceSaveDo(planInstance)
                             true
-
                         }
 
                         R.id.EDIT_PLAN_INSTANCE_COMMAND -> {
@@ -957,7 +1039,7 @@ class TemplatesList : SortableListFragment(), LoaderManager.LoaderCallbacks<Curs
                 setOnDismissListener {
                     popup = null
                 }
-                //displaying the popup
+                // displaying the popup
                 show()
             }
         }

@@ -9,14 +9,10 @@ import androidx.preference.PreferenceFragmentCompat
 import kotlinx.serialization.json.Json
 import org.totschnig.myexpenses.BuildConfig
 import org.totschnig.myexpenses.R
-import org.totschnig.myexpenses.activity.MyExpenses
 import org.totschnig.myexpenses.activity.MyExpensesV2
-import org.totschnig.myexpenses.activity.Version
 import org.totschnig.myexpenses.db2.FLAG_NEUTRAL
 import org.totschnig.myexpenses.db2.FLAG_TRANSFER
 import org.totschnig.myexpenses.db2.entities.Transaction
-import org.totschnig.myexpenses.dialog.MenuItem
-import org.totschnig.myexpenses.dialog.valueOf
 import org.totschnig.myexpenses.provider.KEY_ROWID
 import org.totschnig.myexpenses.provider.KEY_TRANSACTIONID
 import org.totschnig.myexpenses.util.Utils
@@ -36,7 +32,6 @@ import org.totschnig.myexpenses.viewmodel.ReferenceNumber
 import org.totschnig.myexpenses.viewmodel.Tags
 import java.util.Calendar
 import java.util.Locale
-import kotlin.jvm.java
 
 interface PrefHandler {
     fun getKey(key: PrefKey): String
@@ -165,19 +160,6 @@ interface PrefHandler {
             }
         }
 
-    fun getCustomMenuV1() =
-        getOrderedStringSet(MenuItem.MenuContext.V1.prefKey)
-            ?.let { stored ->
-                stored.mapNotNull {
-                    try {
-                        MenuItem.valueOf(it)
-                    } catch (_: IllegalArgumentException) {
-                        null
-                    }
-                }
-            }
-            ?: MenuItem.getDefaultConfiguration(MenuItem.MenuContext.V1)
-
     val shouldDebug: Boolean
         get() = getBoolean(PrefKey.DEBUG_LOGGING, BuildConfig.DEBUG)
 
@@ -192,15 +174,6 @@ interface PrefHandler {
             }
         }
 
-    var mainScreenLegacy: Boolean
-        get() = enumValueOrDefault(PrefKey.UI_MAIN_SCREEN_VERSION, Version.V2) == Version.V1
-        set(value) {
-            putString(PrefKey.UI_MAIN_SCREEN_VERSION, if (value) Version.V1.name else Version.V2.name)
-        }
-
-    val mainScreenClass: Class<*>
-        get() = if (mainScreenLegacy) MyExpenses::class.java else MyExpensesV2::class.java
-
     fun createShowDetailsIntent(
         context: Context,
         requestCode: Int,
@@ -208,7 +181,7 @@ interface PrefHandler {
     ): PendingIntent = PendingIntent.getActivity(
         context,
         requestCode,
-        Intent(context, mainScreenClass).apply {
+        Intent(context, MyExpensesV2::class.java).apply {
             putExtra(KEY_ROWID, transaction.accountId)
             putExtra(KEY_TRANSACTIONID, transaction.id)
         },
@@ -274,6 +247,13 @@ var PrefHandler.printLayoutColumnWidths: List<Int>
         saveIntList(PrefKey.PRINT_LAYOUT_COLUMN_WIDTH, value)
     }
 
+var PrefHandler.isOnboardingCompleted: Boolean
+    get() =  getBoolean(PrefKey.ONBOARDING_COMPLETED, false) ||
+            getInt(PrefKey.CURRENT_VERSION, -1) != -1
+    set(value) {
+        putBoolean(PrefKey.ONBOARDING_COMPLETED, value)
+    }
+
 enum class ColorSource {
     TYPE, SIGN, TYPE_WITH_SIGN;
 
@@ -282,4 +262,8 @@ enum class ColorSource {
         TYPE_WITH_SIGN -> type.takeIf { it == FLAG_TRANSFER }
         SIGN -> null
     }
+}
+
+enum class TagStyle {
+    OUTLINE, FILLED
 }

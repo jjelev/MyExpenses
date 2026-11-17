@@ -24,7 +24,6 @@ import kotlinx.parcelize.Parcelize
 import org.totschnig.myexpenses.R
 import org.totschnig.myexpenses.activity.BaseActivity
 import org.totschnig.myexpenses.preference.Mapper
-import org.totschnig.myexpenses.preference.PrefKey
 import org.totschnig.myexpenses.util.TextUtils
 
 @Parcelize
@@ -210,27 +209,18 @@ sealed class MenuItem(
 
 
     @Parcelize
-    sealed class MenuContext: Parcelable {
+    sealed class MenuContext(private val _prefKey: String): Parcelable {
 
         fun title(context: Context) = when (this) {
-            V1 -> "V1"
             V2Navigation -> context.getString(R.string.main_navigation)
             V2Transactions -> context.getString(R.string.import_select_transactions)
         }
 
-        data object V1 : MenuContext() {
-            @IgnoredOnParcel
-            val prefKey: PrefKey = PrefKey.CUSTOMIZE_MAIN_MENU
-        }
+        @IgnoredOnParcel
+        val prefKey: Preferences.Key<String> = stringPreferencesKey(_prefKey)
 
-        @Parcelize
-        sealed class V2(private val _prefKey: String): MenuContext(), Parcelable {
-            @IgnoredOnParcel
-            val prefKey: Preferences.Key<String> = stringPreferencesKey(_prefKey)
-        }
-
-        data object V2Navigation : V2("customize_menu_v2_main")
-        data object V2Transactions : V2("customize_menu_v2_transactions")
+        data object V2Navigation : MenuContext("customize_menu_v2_main")
+        data object V2Transactions : MenuContext("customize_menu_v2_transactions")
     }
 
     enum class NavigationMode {
@@ -289,29 +279,6 @@ sealed class MenuItem(
         }
 
         fun all(menuContext: MenuContext) = when (menuContext) {
-            MenuContext.V1 -> listOf(
-                Search,
-                Templates,
-                Budget,
-                Distribution,
-                History,
-                Parties,
-                ScanMode,
-                Reset,
-                Sync,
-                FinTsSync,
-                ShowStatusHandle,
-                Balance,
-                Sort,
-                Grouping,
-                Print,
-                Archive,
-                Settings,
-                Help,
-                Backup,
-                WebUI,
-                Restore
-            )
 
             MenuContext.V2Navigation -> listOf(
                 Templates,

@@ -1,6 +1,7 @@
 package org.totschnig.myexpenses.test.espresso
 
 import android.content.Intent
+import android.icu.util.Currency
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
@@ -16,16 +17,26 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.viewpager2.widget.ViewPager2
 import com.adevinta.android.barista.assertion.BaristaVisibilityAssertions
+import com.google.common.truth.Truth.assertThat
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.After
+import org.junit.Assume
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Test
 import org.totschnig.myexpenses.R
 import org.totschnig.myexpenses.activity.MyExpensesV2
 import org.totschnig.myexpenses.activity.OnboardingActivity
+import org.totschnig.myexpenses.injector
+import org.totschnig.myexpenses.preference.PrefKey
+import org.totschnig.myexpenses.provider.KEY_CODE
+import org.totschnig.myexpenses.provider.KEY_FRACTION_DIGITS
+import org.totschnig.myexpenses.provider.TransactionProvider
 import org.totschnig.myexpenses.testutils.BaseUiTest
 import org.totschnig.myexpenses.testutils.TestShard4
+import org.totschnig.myexpenses.testutils.isOrchestrated
 import org.totschnig.myexpenses.util.Utils
+import org.totschnig.shared_test.CursorSubject.Companion.useAndAssert
 
 @TestShard4
 class OnboardingTest : BaseUiTest<OnboardingActivity>() {
@@ -91,6 +102,58 @@ class OnboardingTest : BaseUiTest<OnboardingActivity>() {
         Intents.release()
     }
 
+    @Test
+    fun onboarding_storesCustomFractionDigitsInDatabase() {
+        checkPage(0)
+        clickNextButton()
+        checkPage(1)
+        clickNextButton()
+        checkPage(2)
+        clickButton(R.id.suw_navbar_done)
+
+        val homeCurrency = prefHandler.getString(PrefKey.HOME_CURRENCY, null)
+        assertThat(homeCurrency).isNotNull()
+
+        targetContext.contentResolver.query(
+            TransactionProvider.CURRENCIES_URI,
+            arrayOf(KEY_FRACTION_DIGITS),
+            "$KEY_CODE = ?",
+            arrayOf(homeCurrency),
+            null
+        ).useAndAssert {
+            movesToFirst()
+            hasInt(0, Currency.getInstance(homeCurrency).defaultFractionDigits)
+        }
+    }
+
+    @Test
+    fun onboardingWithEncryption_savesDataToEncryptedDatabase() {
+
+        // 2. Navigate to Privacy Page (Page 1) and enable Encryption
+        clickNextButton() // Move to Privacy
+        onView(withText(R.string.experimental)).perform(click())
+        onView(withText(R.string.encrypt_database)).perform(click()) // Toggle Encrypt Database
+        pressBack() // Dismiss info dialog if shown
+
+        // 3. Navigate to Data Page (Page 2) and save account
+        clickNextButton() // Move to Data
+        clickButton(R.id.suw_navbar_done) // Save account and finish onboarding
+
+        // 4. Verify preference was saved
+        assertThat(prefHandler.encryptDatabase).isTrue()
+
+        // 5. Assert that the ENCRYPTED database file exists and contains the data,
+        // rather than the unencrypted database file.
+        val dbNameProvider = targetContext.injector.databaseNameProvider()
+        val unencryptedDb = targetContext.getDatabasePath(dbNameProvider(false))
+        val encryptedDb = targetContext.getDatabasePath(dbNameProvider(true))
+
+        // Bug verification: Under the bug, data went to unencryptedDb, and encryptedDb either doesn't exist or is empty.
+        assertThat(encryptedDb.exists()).isTrue()
+        assertThat(unencryptedDb.exists()).isFalse()
+
+    }
+
     private fun swipeNext() {
         onView(withId(R.id.viewPager)).perform(swipeLeft())
     }
@@ -120,6 +183,15 @@ class OnboardingTest : BaseUiTest<OnboardingActivity>() {
                 }
             )
         )
+    }
+
+    companion object {
+        @JvmStatic
+        @BeforeClass
+        fun checkIsOrchestrated() {
+            //when testing via am instrument, precondition of a clean state is not met
+            Assume.assumeTrue(isOrchestrated)
+        }
     }
 }
 

@@ -607,7 +607,6 @@
     <string name="remap_payee">Усе выбраныя транзакцыі будуць супастаўлены з контрагентам %s.</string>
     <string name="sync_login_again">Калі ласка, увайдзіце зноў.</string>
     <string name="pref_home_currency_title">Унутраная валюта</string>
-    <string name="navigation_drawer_accounts_title">Кіраванне акаўнтамі</string>
     <string name="translated_by">Пераклаў</string>
     <string name="exchange_rate_not_supported">Настроены пастаўшчык абменных курсаў не прадастаўляе курс %1$s : %2$s. Вы можаце паспрабаваць выбраць іншы ў наладах.</string>
     <string name="menu_edit_budget">Рэдагаваць бюджэт</string>
@@ -886,7 +885,6 @@
     <string name="not_enough_data">Недастаткова дадзеных</string>
     <string name="archive">Архіў</string>
     <string name="warning_archive_inconsistent_state">Транзакцыі ў выбраным дыяпазоне дат маюць супярэчлівыя статусы (%s).</string>
-    <string name="menu_show_equivalent_value">Эквівалентнае значэнне</string>
     <string name="initial_value">Пачатковае значэнне</string>
     <string name="current_value">Бягучае значэнне</string>
     <string name="total_value">Агульны кошт</string>
@@ -997,4 +995,9 @@
     <string name="pref_content_based_colors_title">Дынамічны колер на аснове ўліковага запісу</string>
     <string name="pref_content_based_colors_summary">Выбіраць колеры тэмы на аснове колеру бягучага ўліковага запісу. Выключыце, калі тэкст цяжка чытаць.</string>
     <string name="rounding">Акругленне</string>
+    <string name="pref_tag_style_title">Стыль тэга</string>
+    <string name="pref_tag_style_outline">Каляровая рамка</string>
+    <string name="pref_tag_style_filled">Цалкам каляровы</string>
+    <string name="trade_additional_costs">Дадатковыя выдаткі</string>
+    <string name="contrib_feature_portfolio_tracking">Адсочванне партфеля</string>
 </resources>

@@ -588,7 +588,6 @@
     <string name="licence_has_expired_n_days">உங்கள் நிபுணத்துவ திறவுகோல் %d நாட்களுக்கு முன்பு காலாவதியாகிவிட்டது.</string>
     <string name="gdpr_consent_button_no">விளம்பரம் இல்லாத பதிப்பிற்கு பணம் செலுத்து</string>
     <string name="sort_order">வரிசைப்படுத்தும் முறை</string>
-    <string name="navigation_drawer_accounts_title">கணக்குகளை நிர்வகி</string>
     <string name="pref_sync_wifi_only_summary">Wi-Fi இல் மட்டுமே ஒத்திசை</string>
     <string name="pref_sync_changes_immediately_summary">உள் மாற்றங்களை உடனடியாக பின்தளத்திற்கு எழுதவும்</string>
     <string name="synchronization_postponed">ஒத்திசைவு தள்ளி வைக்கப்படுகிறது.</string>
@@ -967,7 +966,6 @@
     <string name="sort_direction">திசையை வரிசைப்படுத்துங்கள்</string>
     <string name="batch_download_result">%d விலைகள் பதிவிறக்கம் செய்யப்பட்டு தரவுத்தளத்தில் சேமிக்கப்பட்டன.</string>
     <string name="filter_dialog_empty">இதுவரை எந்த அளவுகோல்களும் சேர்க்கப்படவில்லை. உங்கள் வினவலை வரையறுக்கவும், உங்கள் முடிவுகளை செம்மைப்படுத்தவும் மேலே உள்ள பொத்தான்களைத் தட்டவும்.</string>
-    <string name="menu_show_equivalent_value">சமமான மதிப்பு</string>
     <string name="initial_value">தொடக்க மதிப்பு</string>
     <string name="current_value">தற்போதைய மதிப்பு</string>
     <string name="equivalent_amount_plural">சமமான அளவு</string>
@@ -1034,4 +1032,9 @@
     <string name="content_description_select_recent_file">அண்மைக் கால கோப்புகளிலிருந்து தேர்ந்தெடுக்கவும்</string>
     <string name="menu_templates">வார்ப்புருக்கள்</string>
     <string name="important_upgrade_information_heading">முக்கிய தகவல்கள்</string>
+    <string name="pref_tag_style_title">குறிச்சொல் பாணி</string>
+    <string name="pref_tag_style_outline">வண்ண எல்லை</string>
+    <string name="pref_tag_style_filled">முழு வண்ணமயமான</string>
+    <string name="trade_additional_costs">கூடுதல் செலவுகள்</string>
+    <string name="contrib_feature_portfolio_tracking">போர்ட்ஃபோலியோ கண்காணிப்பு</string>
 </resources>

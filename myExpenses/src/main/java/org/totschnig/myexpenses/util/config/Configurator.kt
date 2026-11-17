@@ -7,8 +7,7 @@ interface Configurator {
     enum class Configuration {
         USE_SET_DECOR_PADDING_WORKAROUND,
         AUTO_COMPLETE_DROPDOWN_SET_INPUT_METHOD_NEEDED,
-        ad_handling_waterfall,
-        SUNSET_V1_ENABLED;
+        ad_handling_waterfall;
     }
 
     fun <T : Any> get(key: Configuration, defaultValue: T, clazz: KClass<T>) = defaultValue

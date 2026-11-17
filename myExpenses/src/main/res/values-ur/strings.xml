@@ -614,7 +614,6 @@
     <string name="split_transaction_one_success">لین دین کامیابی کے ساتھ تقسیم میں تبدیل ہو گیا.</string>
     <string name="gdpr_consent_button_no">اشتہار سے پاک ورژن کے لیے ادائیگی کریں</string>
     <string name="sort_order">ترتیب</string>
-    <string name="navigation_drawer_accounts_title">اکاؤنٹس کا نظم کریں</string>
     <string name="pref_sync_wifi_only_summary">صرف Wi-Fi پر ہونے پر مطابقت پذیری کریں</string>
     <string name="pref_translation_title">ترجمہ</string>
     <string name="synchronization_postponed">مطابقت پذیری ملتوی ہے.</string>
@@ -763,4 +762,9 @@
     <string name="balance_sheet_net_worth">خالص مالیت</string>
     <string name="pref_account_list_display_configuration_title">اکاؤنٹ فہرست</string>
     <string name="menu_templates">ٹیمپلیٹس</string>
+    <string name="pref_tag_style_title">ٹیگ کا انداز</string>
+    <string name="pref_tag_style_outline">رنگین بارڈر</string>
+    <string name="pref_tag_style_filled">مکمل رنگین</string>
+    <string name="trade_additional_costs">اضافی اخراجات</string>
+    <string name="contrib_feature_portfolio_tracking">پورٹ فولیو ٹریکنگ</string>
 </resources>

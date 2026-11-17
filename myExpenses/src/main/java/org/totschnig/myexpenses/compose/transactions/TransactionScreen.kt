@@ -125,6 +125,7 @@ import org.totschnig.myexpenses.model.AccountGroupingKey
 import org.totschnig.myexpenses.model.AccountType
 import org.totschnig.myexpenses.model.BalanceType
 import org.totschnig.myexpenses.model.CommodityType
+import org.totschnig.myexpenses.model.ContribFeature
 import org.totschnig.myexpenses.model.CurrencyUnit
 import org.totschnig.myexpenses.preference.PreferenceState
 import org.totschnig.myexpenses.util.convAmount
@@ -221,7 +222,9 @@ fun TransactionScreen(
                     }
                     val context = LocalContext.current
                     TopAppBar(
-                        windowInsets = windowInsets,
+                        windowInsets = windowInsets.only(
+                            WindowInsetsSides.Horizontal + WindowInsetsSides.Top
+                        ),
                         scrollBehavior = scrollBehavior,
                         modifier = Modifier.height(height),
                         navigationIcon = {
@@ -554,6 +557,9 @@ fun TransactionScreen(
                 .filter { it.isPortfolio && it.id != currentAccount.id }
                 .map { it.id to it.labelV2(LocalContext.current) },
             initialAction = tradeAction,
+            initialCostCategoryRefs = viewModel.lastTradeFeeCategories.collectAsStateWithLifecycle().value,
+            canAddMultipleCostLegs = viewModel.canAddMultipleCostLegs,
+            onShowUpgrade = { onEvent(AppEvent.ShowUpgrade(ContribFeature.PORTFOLIO)) },
             onCreateAsset = onCreateAsset,
             isCurrencyUsed = isCurrencyUsed,
             onLookupMatchingTransactions = { accountId, total, date, isBuy ->

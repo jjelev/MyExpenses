@@ -631,7 +631,6 @@
     <string name="licence_has_expired_n_days">انتهت صلاحية مفتاحك المهني قبل %d يوم.</string>
     <string name="gdpr_consent_button_no">ادفع مقابل النسخة الخالية من الإعلانات</string>
     <string name="sort_order">ترتيب الفرز</string>
-    <string name="navigation_drawer_accounts_title">إدارة الحسابات</string>
     <string name="pref_sync_wifi_only_summary">مزامنة فقط عند الاتصال بشبكة Wi-Fi</string>
     <string name="pref_sync_changes_immediately_summary">اكتب التغييرات المحلية على الفور في الخلفية</string>
     <string name="synchronization_postponed">تم تأجيل التزامن.</string>
@@ -1013,7 +1012,6 @@
     <string name="warning_archived_transfer_cannot_be_edited">لا يمكن تحرير التحويل لأن جانبه الآخر مؤرشف.</string>
     <string name="budget_import_none_found">لم يتم العثور على ميزانيات.</string>
     <string name="webui_download_no_data">بعد الطباعة أو التصدير أو إنشاء نسخ احتياطية في التطبيق، ستتوفر الملفات هنا للتنزيل.</string>
-    <string name="menu_show_equivalent_value">القيمة المكافئة</string>
     <string name="initial_value">القيمة الأولية</string>
     <string name="current_value">القيمة الحالية</string>
     <string name="total_value">القيمة الإجمالية</string>
@@ -1053,6 +1051,14 @@
     <string name="category_type_main">الفئة الرئيسية</string>
     <string name="category_type_sub">التصنيفات الفرعية</string>
     <string name="category_description_base">%1$s، المستوى %2$d</string>
+    <plurals name="category_description_children_suffix">
+        <item quantity="zero">، لا تحتوي على أي فئة فرعية بالمستوى %2$d.</item>
+        <item quantity="one">، تحتوي على فئة فرعية واحدة بالمستوى %2$d.</item>
+        <item quantity="two">، تحتوي على فئتين فرعيتين بالمستوى %2$d.</item>
+        <item quantity="few">، تحتوي على %1$d فئات فرعية بالمستوى %2$d.</item>
+        <item quantity="many">، تحتوي على %1$d فئة فرعية بالمستوى %2$d.</item>
+        <item quantity="other">، تحتوي على %1$d فئة فرعية بالمستوى %2$d.</item>
+    </plurals>
     <string name="edit_account_type">تعديل نوع حساب</string>
     <string name="new_account_type">نوع الحساب الجديد</string>
     <string name="pref_print_layout_summary">تكوين عرض الأعمدة وتكوينها</string>
@@ -1066,6 +1072,14 @@
     <string name="aggregate_invisible">تضمين الحسابات غير المرئية في الحسابات المجمعة والميزانية العمومية</string>
     <string name="select_accounts_for_flag">حدد حسابات الإبلاغ %s</string>
     <string name="menu_cleanup">تنظيف</string>
+    <plurals name="warning_cleanup_parties">
+        <item quantity="zero">لن يتم حذف أي طرف غير مستخدم.</item>
+        <item quantity="one">سيتم حذف طرف واحد غير مستخدم.</item>
+        <item quantity="two">سيتم حذف طرفين غير مستخدمين.</item>
+        <item quantity="few">سيتم حذف %d أطراف غير مستخدمة.</item>
+        <item quantity="many">سيتم حذف %d طرفاً غير مستخدم.</item>
+        <item quantity="other">سيتم حذف %d طرف غير مستخدم.</item>
+    </plurals>
     <string name="show_invisible">الحسابات المخفية</string>
     <string name="show_zero">حسابات الرصيد الصفري</string>
     <string name="content_description_clear_party">مسح المجموعة المحددة</string>
@@ -1078,6 +1092,22 @@
         <item quantity="few">تم العثور على بيانات</item>
         <item quantity="many">تم العثور على بيانات</item>
         <item quantity="other">تم العثور على بيانات</item>
+    </plurals>
+    <plurals name="import_prices_failure_message">
+        <item quantity="zero">تعذر معالجة أي سطر.</item>
+        <item quantity="one">تعذر معالجة سطر واحد.</item>
+        <item quantity="two">تعذر معالجة سطرين.</item>
+        <item quantity="few">تعذر معالجة %d أسطر.</item>
+        <item quantity="many">تعذر معالجة %d سطراً.</item>
+        <item quantity="other">تعذر معالجة %d سطر.</item>
+    </plurals>
+    <plurals name="import_trades_missing_assets_message">
+        <item quantity="zero">لا يشير أي سطر إلى أصول مجهولة: %2$s.</item>
+        <item quantity="one">يشير سطر واحد إلى أصول مجهولة: %2$s.</item>
+        <item quantity="two">يشير سطران إلى أصول مجهولة: %2$s.</item>
+        <item quantity="few">تشير %1$d أسطر إلى أصول مجهولة: %2$s.</item>
+        <item quantity="many">يشير %1$d سطراً إلى أصول مجهولة: %2$s.</item>
+        <item quantity="other">يشير %1$d سطر إلى أصول مجهولة: %2$s.</item>
     </plurals>
     <string name="menu_templates">القوالب</string>
     <string name="pref_ui_start_screen_title">شاشة البداية</string>
@@ -1101,7 +1131,7 @@
     <string name="trade_matching_transaction_found">تم العثور على معاملة مطابقة في حساب التمويل. اختر للربط:</string>
     <string name="asset_quantity_at_price">%1$s بسعر %2$s</string>
     <string name="contrib_feature_portfolio_tracking">تتبع المحفظة</string>
-    <string name="premium_nudge_portfolio_message">يمكنك إدارة محفظة واحدة مجانًا. قم بالترقية لإدارة محافظ متعددة وفتح ميزات تتبع متقدمة.</string>
+    <string name="premium_nudge_portfolio_message">يمكنك إدارة محفظة واحدة مجانًا. قم بالترقية لإدارة محافظ متعددة وإلغاء قفل ميزات متقدمة (بما في ذلك %1$s).</string>
     <string name="rounding">تقريب</string>
     <string name="parse_error_at_line">خطأ في السطر %1$d: %2$s</string>
     <string name="content_description_show_balance_details">عرض معلومات مفصلة</string>
@@ -1118,4 +1148,25 @@
     <string name="asset_type_commodity">سلعة</string>
     <string name="asset_type_commodity_plural">السلع</string>
     <string name="important_upgrade_information_heading">معلومات مهمة</string>
+    <string name="pref_tag_style_title">نمط الوسم</string>
+    <string name="pref_tag_style_outline">إطار ملون</string>
+    <string name="pref_tag_style_filled">ملون بالكامل</string>
+    <string name="trade_additional_costs">تكاليف إضافية</string>
+    <string name="dialog_title_warning_delete_closed_account">هل تريد حذف حساب مغلق؟</string>
+    <string name="search_asset">البحث عن الأصول</string>
+    <string name="remap_update_value_date">وأيضا تحديث تاريخ القيمة</string>
+    <string name="trade_add_cost">إضافة التكلفة</string>
+    <string name="help_floating_action_button">زر الحركة العائمة</string>
+    <string name="single_pane_view">لوحة واحدة</string>
+    <string name="split_pane_view">العرض المنقسم</string>
+    <string name="search_fts_help_and">قهوة شاي : يبحث عن المعاملات التي تحتوي على القهوة والشاي معا</string>
+    <string name="search_fts_help_not">قهوة -شاي : يبحث عن المعاملات التي تحتوي على القهوة وبدون شاي</string>
+    <string name="search_fts_help_or">قهوة OR شاي : يبحث عن المعاملات التي تحتوي على القهوة أو الشاي</string>
+    <string name="search_fts_help_phrase">\"قهوة وشاي\" : يبحث عن العبارة الدقيقة \"قهوة وشاي\"</string>
+    <string name="search_fts_help_prefix">قهو* : يبحث عن الكلمات التي تبدأ بـ قهو (مثل قهوة، مقهى)</string>
+    <string name="search_fts_help_column">أضف بادئة لتقييد البحث في عمود محدد (مثال payee:سوبرماركت, category:طعام, tag:عمل). المتاح: \'comment\' (ملاحظات), \'payee\' (المستفيد), \'category\' (الفئة), \'tag\' (العلامات), \'ref\' (رقم المرجع)</string>
+    <string name="full_text_search">البحث في النص الكامل</string>
+    <string name="search_full_text">البحث في جميع الحقول</string>
+    <string name="search_fts_error_malformed">مشغل بحث غير مكتمل أو علامات تنصيص غير متطابقة</string>
+    <string name="parent_category">الفئة الأصل</string>
 </resources>

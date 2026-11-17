@@ -50,6 +50,7 @@ import org.totschnig.myexpenses.compose.TEST_TAG_EDIT_ACCOUNT
 import org.totschnig.myexpenses.compose.TEST_TAG_FAB_ACCOUNTS
 import org.totschnig.myexpenses.compose.TEST_TAG_FAB_TRANSACTIONS
 import org.totschnig.myexpenses.compose.TEST_TAG_OVERFLOW_MENU
+import org.totschnig.myexpenses.compose.TEST_TAG_OVERFLOW_MENU_TRANSACTIONS
 import org.totschnig.myexpenses.db2.deleteAccount
 import org.totschnig.myexpenses.db2.loadAccount
 import org.totschnig.myexpenses.dialog.MenuItem
@@ -139,9 +140,9 @@ class MyExpensesTest : BaseMyExpensesTest() {
 
     fun assertMenuItemHidden(vararg menuItems: MenuItem) {
         val overflowNodes =
-            composeTestRule.onAllNodesWithTag(TEST_TAG_OVERFLOW_MENU).fetchSemanticsNodes()
+            composeTestRule.onAllNodesWithTag(TEST_TAG_OVERFLOW_MENU_TRANSACTIONS).fetchSemanticsNodes()
         if (overflowNodes.isNotEmpty()) {
-            composeTestRule.onNodeWithTag(TEST_TAG_OVERFLOW_MENU).performClick()
+            composeTestRule.onNodeWithTag(TEST_TAG_OVERFLOW_MENU_TRANSACTIONS).performClick()
 
             menuItems.forEach {
                 composeTestRule.onNodeWithTag(it.testTag).assertDoesNotExist()

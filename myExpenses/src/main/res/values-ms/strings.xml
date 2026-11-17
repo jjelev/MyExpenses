@@ -79,7 +79,7 @@
     <!-- %1$s is replace with account label -->
     <string name="dialog_title_balance_account">Baki %1$s</string>
     <string name="dialog_title_contrib_feature">Fitur premium</string>
-    <string name="dialog_title_warning_delete_account">Padam akaun %1$d?</string>
+    <string name="dialog_title_warning_delete_account">Padam akaun?</string>
     <string name="dialog_title_warning_delete_category">Padam kategori?</string>
     <string name="dialog_title_warning_delete_template">Padam templat?</string>
     <string name="dialog_title_warning_delete_transaction">Padam transaksi?</string>
@@ -355,19 +355,15 @@
     <string name="warning_change_fraction_digits_3">Jika amaun dikemakinikan, anda akan kehilangan maklumat berkenaan bahagian pecahannya.</string>
     <string name="warning_change_fraction_digits_checkbox_label">Kemaskini amaun dalam pangkalan data</string>
     <plurals name="import_categories_result">
-        <item quantity="one">%1$d kategori berjaya diimport.</item>
         <item quantity="other">%1$d kategori berjaya diimport.</item>
     </plurals>
     <plurals name="import_parties_result">
-        <item quantity="one">%1$d pihak berjaya diimport.</item>
         <item quantity="other">%1$d pihak berjaya diimport.</item>
     </plurals>
     <plurals name="import_accounts_result">
-        <item quantity="one">%1$d akaun berjaya diimport.</item>
         <item quantity="other">%1$d akaun berjaya diimport.</item>
     </plurals>
     <plurals name="import_transactions_result">
-        <item quantity="one">%1$d transaksi berjaya diimport ke dalam akaun %2$s</item>
         <item quantity="other">%1$d transaksi berjaya diimport ke dalam akaun %2$s</item>
     </plurals>
     <string name="import_source_select_error">Sila sediakan fail jenis %1$s</string>
@@ -576,7 +572,6 @@
     <string name="licence_has_expired_n_days">Kunci profesional anda akan tamat tempoh %d hari yang lalu.</string>
     <string name="gdpr_consent_button_no">Beli untuk versi tanpa-iklan</string>
     <string name="sort_order">Tertib isih</string>
-    <string name="navigation_drawer_accounts_title">Urus akaun</string>
     <string name="pref_sync_wifi_only_summary">Hanya segerak jika guna Wi-Fi</string>
     <string name="pref_sync_changes_immediately_summary">Tulis perubahan setempat serta-merta pada bahagian belakang</string>
     <string name="synchronization_postponed">Penyegerakan ditunda.</string>
@@ -884,4 +879,9 @@
     <string name="menu_templates">Templat</string>
     <string name="rounding">Pembulatan</string>
     <string name="important_upgrade_information_heading">Maklumat penting</string>
+    <string name="pref_tag_style_title">Gaya tag</string>
+    <string name="pref_tag_style_outline">Sempadan berwarna</string>
+    <string name="pref_tag_style_filled">Berwarna penuh</string>
+    <string name="trade_additional_costs">Kos tambahan</string>
+    <string name="contrib_feature_portfolio_tracking">Penjejakan portfolio</string>
 </resources>

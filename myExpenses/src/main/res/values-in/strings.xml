@@ -162,7 +162,7 @@
     <string name="dialog_contrib_usage_limit_with_dialog">Dengan status lisensi Anda saat ini (%1$s), dialog ini akan ditampilkan setiap kali digunakan.</string>
     <string name="export_sdcard_failure">Ekspor ke file \"%1$s\" gagal: %2$s</string>
     <string name="dialog_remind_rate_yes">Beri penilaian sekarang</string>
-    <string name="dialog_title_warning_delete_account">Hapus %1$d akun?</string>
+    <string name="dialog_title_warning_delete_account">Hapus akun?</string>
     <string name="dialog_password_activate_protection">Aktifkan perlindungan kata sandi</string>
     <string name="help_heading_credits">Kredit</string>
     <string name="grisbi_import_parties_loading">Memuat pihak dari %1$s</string>
@@ -421,19 +421,15 @@
     <string name="warning_change_fraction_digits_3">Jika jumlah diperbarui, Anda akan kehilangan informasi tentang bagian pecahannya.</string>
     <string name="warning_change_fraction_digits_checkbox_label">Perbarui jumlah dalam database</string>
     <plurals name="import_categories_result">
-        <item quantity="one">%1$d kategori berhasil diimpor.</item>
         <item quantity="other">%1$d kategori berhasil diimpor.</item>
     </plurals>
     <plurals name="import_parties_result">
-        <item quantity="one">%1$d pihak berhasil diimpor.</item>
         <item quantity="other">%1$d pihak berhasil diimpor.</item>
     </plurals>
     <plurals name="import_accounts_result">
-        <item quantity="one">%1$d akun berhasil diimpor.</item>
         <item quantity="other">%1$d akun berhasil diimpor.</item>
     </plurals>
     <plurals name="import_transactions_result">
-        <item quantity="one">%1$d transaksi berhasil diimpor ke akun %2$s</item>
         <item quantity="other">%1$d transaksi berhasil diimpor ke akun %2$s</item>
     </plurals>
     <string name="import_source_select_error">Harap berikan file bertipe %1$s</string>
@@ -594,7 +590,6 @@
     <string name="licence_has_expired_n_days" tools:ignore="PluralsCandidate">Kunci profesional Anda telah kedaluwarsa %d hari yang lalu.</string>
     <string name="gdpr_consent_button_no">Bayar untuk versi tanpa iklan</string>
     <string name="sort_order">Urutan pengurutan</string>
-    <string name="navigation_drawer_accounts_title">Kelola akun</string>
     <string name="pref_sync_wifi_only_summary">Sinkronkan hanya saat menggunakan Wi-Fi</string>
     <string name="pref_sync_changes_immediately_summary">Tulis perubahan lokal segera ke backend</string>
     <string name="synchronization_postponed">Sinkronisasi ditunda.</string>
@@ -847,7 +842,6 @@
     <string name="budget_import_none_found">Tidak ada anggaran yang ditemukan.</string>
     <string name="webui_download_no_data">Setelah mencetak, mengekspor, atau membuat cadangan di aplikasi, file akan tersedia dari sini untuk diunduh.</string>
     <string name="filter_dialog_empty">Belum ada kriteria yang ditambahkan. Ketuk tombol di atas untuk menentukan kueri Anda dan menyempurnakan hasil.</string>
-    <string name="menu_show_equivalent_value">Nilai setara</string>
     <string name="initial_value">Nilai awal</string>
     <string name="current_value">Nilai saat ini</string>
     <string name="total_value">Nilai total</string>
@@ -953,5 +947,9 @@
     <string name="trade_matching_transaction_found">Ditemukan transaksi yang cocok di akun pendanaan. Pilih untuk menautkan:</string>
     <string name="asset_quantity_at_price">%1$s @ %2$s</string>
     <string name="contrib_feature_portfolio_tracking">Pelacakan portofolio</string>
-    <string name="premium_nudge_portfolio_message">Anda dapat mengelola satu portofolio secara gratis. Tingkatkan untuk mengelola beberapa portofolio dan membuka fitur pelacakan lanjutan.</string>
+    <string name="premium_nudge_portfolio_message">Anda dapat mengelola satu portofolio secara gratis. Tingkatkan untuk mengelola beberapa portofolio dan membuka fitur lanjutan (%1$s).</string>
+    <string name="pref_tag_style_title">Gaya tag</string>
+    <string name="pref_tag_style_outline">Bingkai berwarna</string>
+    <string name="pref_tag_style_filled">Berwarna penuh</string>
+    <string name="trade_additional_costs">Biaya tambahan</string>
 </resources>

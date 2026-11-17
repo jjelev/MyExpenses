@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<baseline version="1.0">
+    <file name="src/androidTest/java/androidx/preference/tests/PreferenceDialogFragmentCompatTest.kt">
+        <error line="47" column="32" source="standard:function-expression-body" />
+        <error line="105" column="12" source="standard:statement-wrapping" />
+        <error line="105" column="77" source="standard:statement-wrapping" />
+        <error line="110" column="12" source="standard:statement-wrapping" />
+        <error line="110" column="66" source="standard:statement-wrapping" />
+        <error line="114" column="12" source="standard:statement-wrapping" />
+        <error line="114" column="68" source="standard:statement-wrapping" />
+        <error line="119" column="14" source="standard:function-expression-body" />
+    </file>
+    <file name="src/androidTest/java/androidx/preference/tests/PreferenceFragmentCompatInterfaceTest.kt">
+        <error line="486" column="27" source="standard:property-naming" />
+        <error line="487" column="9" source="standard:spacing-between-declarations-with-comments" />
+        <error line="493" column="9" source="standard:spacing-between-declarations-with-comments" />
+    </file>
+    <file name="src/androidTest/java/androidx/preference/tests/SeekBarPreferenceTest.kt">
+        <error line="251" column="43" source="standard:function-expression-body" />
+        <error line="285" column="65" source="standard:function-expression-body" />
+    </file>
+    <file name="src/main/java/androidx/preference/PreferenceHeaderFragmentCompat.kt">
+        <error line="244" column="1" source="standard:indent" />
+        <error line="254" column="5" source="standard:comment-spacing" />
+    </file>
+</baseline>

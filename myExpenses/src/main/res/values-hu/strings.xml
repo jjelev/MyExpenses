@@ -589,7 +589,6 @@
     <string name="licence_has_expired_n_days">Professzionális kulcsa %d napja lejárt.</string>
     <string name="gdpr_consent_button_no">Fizessen a reklámmentes verzióért</string>
     <string name="sort_order">Rendezési sorrend</string>
-    <string name="navigation_drawer_accounts_title">Fiókok kezelése</string>
     <string name="pref_sync_wifi_only_summary">Szinkronizálás csak Wi-Fi-n keresztül</string>
     <string name="pref_sync_changes_immediately_summary">Írja azonnal a helyi módosításokat a háttérprogramba</string>
     <string name="synchronization_postponed">A szinkronizálás elhalasztva.</string>
@@ -974,7 +973,6 @@
     <string name="budget_import_none_found">Nem találtak költségvetést.</string>
     <string name="webui_download_no_data">Nyomtatás, exportálás vagy biztonsági mentések készítése után a fájlok innen elérhetők lesznek letöltésre.</string>
     <string name="filter_dialog_empty">Még nincs hozzáadott kritérium. Érintsd meg a fenti gombokat, hogy meghatározd a lekérdezésedet és finomítsd az eredményeket.</string>
-    <string name="menu_show_equivalent_value">Ekvivalens érték</string>
     <string name="initial_value">Kezdeti érték</string>
     <string name="current_value">Jelenlegi érték</string>
     <string name="total_value">Összérték</string>
@@ -1072,6 +1070,26 @@
     <string name="trade_matching_transaction_found">A finanszírozási számlán talált egyező tranzakció. Válaszd a linket:</string>
     <string name="asset_quantity_at_price">%1$s – %2$s</string>
     <string name="contrib_feature_portfolio_tracking">Portfóliókövetés</string>
-    <string name="premium_nudge_portfolio_message">Egy portfóliót ingyen kezelhetsz. Frissíts, hogy több portfóliót kezelj, és oldd fel a fejlett követési funkciókat.</string>
+    <string name="premium_nudge_portfolio_message">Egy portfóliót ingyen kezelhetsz. Válts prémiumra több portfólió kezeléséhez, és oldd fel a fejlett funkciókat (%1$s).</string>
     <string name="help_floating_action_button">Lebegő akciógomb</string>
+    <string name="pref_tag_style_title">Címke stílus</string>
+    <string name="pref_tag_style_outline">Színes keret</string>
+    <string name="pref_tag_style_filled">Teljesen színes</string>
+    <string name="trade_additional_costs">További költségek</string>
+    <string name="search_fts_help_and">kávé tea : kávét és teát is tartalmazó tranzakciókat keres</string>
+    <string name="search_fts_help_not">kávé -tea : kávét tartalmazó, de tea nélküli tranzakciókat keres</string>
+    <string name="search_fts_help_or">kávé OR tea : kávét vagy teát tartalmazó tranzakciókat keres</string>
+    <string name="search_fts_help_phrase">\"kávé és tea\" : a pontos \"kávé és tea\" kifejezést keresi</string>
+    <string name="search_fts_help_prefix">káv* : káv karakterekkel kezdődő szavakat keres (pl. kávé, kávézó)</string>
+    <string name="search_fts_help_column">Előtag használatával korlátozhatja a keresést egy adott oszlopra (pl. payee:bolt, category:étel, tag:munka). Elérhető: \'comment\' (jegyzett), \'payee\' (kedvezményezett), \'category\' (kategória), \'tag\' (címkék), \'ref\' (hivatkozási szám)</string>
+    <string name="full_text_search">Teljes szöveges keresés</string>
+    <string name="search_full_text">Keresés minden mezőben</string>
+    <string name="search_fts_error_malformed">Hiányos keresési operátor vagy páratlan idézőjelek</string>
+    <string name="parent_category">Szülőkategória</string>
+    <string name="dialog_title_warning_delete_closed_account">Törli a lezárt számlát?</string>
+    <string name="remap_update_value_date">Az értéknap frissítése is</string>
+    <string name="search_asset">Ezköz keresése</string>
+    <string name="single_pane_view">Egypaneles nézet</string>
+    <string name="split_pane_view">Osztott nézet</string>
+    <string name="trade_add_cost">Költség hozzáadása</string>
 </resources>

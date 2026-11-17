@@ -1,5 +1,6 @@
 package org.totschnig.myexpenses.di
 
+import androidx.annotation.VisibleForTesting
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.google.gson.Gson
@@ -13,7 +14,6 @@ import org.totschnig.myexpenses.activity.BaseActivity
 import org.totschnig.myexpenses.activity.CsvImportActivity
 import org.totschnig.myexpenses.activity.EditActivity
 import org.totschnig.myexpenses.activity.ExpenseEdit
-import org.totschnig.myexpenses.activity.MyExpenses
 import org.totschnig.myexpenses.activity.MyExpensesV2
 import org.totschnig.myexpenses.activity.PreferenceActivity
 import org.totschnig.myexpenses.activity.ProtectedFragmentActivity
@@ -52,6 +52,7 @@ import org.totschnig.myexpenses.fragment.preferences.PreferencesContribFragment
 import org.totschnig.myexpenses.model.CurrencyContext
 import org.totschnig.myexpenses.preference.CalendarListPreferenceDialogFragmentCompat
 import org.totschnig.myexpenses.preference.PrefHandler
+import org.totschnig.myexpenses.preference.SecurePreferenceDataStore
 import org.totschnig.myexpenses.provider.BaseTransactionProvider
 import org.totschnig.myexpenses.provider.PlannerUtils
 import org.totschnig.myexpenses.retrofit.ExchangeRateService
@@ -62,7 +63,6 @@ import org.totschnig.myexpenses.sync.SyncAdapter
 import org.totschnig.myexpenses.task.GrisbiImportTask
 import org.totschnig.myexpenses.util.ExchangeRateHandler
 import org.totschnig.myexpenses.util.ICurrencyFormatter
-import org.totschnig.myexpenses.util.ads.BaseAdHandlerImpl
 import org.totschnig.myexpenses.util.config.Configurator
 import org.totschnig.myexpenses.util.crashreporting.CrashHandler
 import org.totschnig.myexpenses.util.licence.LicenceHandler
@@ -136,6 +136,10 @@ interface AppComponent {
 
     fun prefHandler(): PrefHandler
 
+    @VisibleForTesting
+    @Named(DATABASE_NAME)
+    fun databaseNameProvider(): (Boolean) -> String
+
     fun licenceHandler(): LicenceHandler
 
     @Named(USER_COUNTRY)
@@ -169,6 +173,8 @@ interface AppComponent {
 
     fun preferencesDataStore(): DataStore<Preferences>
 
+    fun securePreferenceDataStore(): SecurePreferenceDataStore
+
     fun configurator(): Configurator
 
     fun exchangeRateHandler(): ExchangeRateHandler
@@ -176,8 +182,6 @@ interface AppComponent {
     fun inject(application: MyApplication)
 
     fun inject(expenseEdit: ExpenseEdit)
-
-    fun inject(myExpenses: MyExpenses)
 
     fun inject(myExpenses: MyExpensesV2)
 
@@ -194,8 +198,6 @@ interface AppComponent {
     fun inject(templatesList: TemplatesList)
 
     fun inject(transactionListComposeDialogFragment: TransactionListComposeDialogFragment)
-
-    fun inject(adHandler: BaseAdHandlerImpl)
 
     fun inject(contribDialogFragment: ContribDialogFragment)
 

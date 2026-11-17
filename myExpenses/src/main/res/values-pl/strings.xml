@@ -596,7 +596,6 @@
     <string name="licence_has_expired_n_days">Twój klucz profesjonalny wygasł %d dni temu.</string>
     <string name="gdpr_consent_button_no">Zapłać za wersję bez reklam</string>
     <string name="sort_order">Kolejność sortowania</string>
-    <string name="navigation_drawer_accounts_title">Zarządzaj kontami</string>
     <string name="pref_sync_wifi_only_summary">Synchronizuj tylko poprzez Wi-Fi</string>
     <string name="synchronization_postponed">Synchronizacja odłożona w czasie.</string>
     <!-- title of an entry on the Settings screen that shows information on how to contribute to the My Expenses Translations Project -->
@@ -967,7 +966,6 @@
     <string name="budget_import_none_found">Nie znaleziono żadnych budżetów.</string>
     <string name="webui_download_no_data">Po wydrukowaniu, wyeksportowaniu lub utworzeniu kopii zapasowych w aplikacji, pliki będą dostępne do pobrania stąd.</string>
     <string name="filter_dialog_empty">Nie dodano jeszcze żadnych kryteriów. Stuknij powyższe przyciski, aby zdefiniować swoje zapytanie i dopracować wyniki.</string>
-    <string name="menu_show_equivalent_value">Wartość równoważna</string>
     <string name="initial_value">Wartość początkowa:</string>
     <string name="current_value">Obecna wartość</string>
     <string name="total_value">Całkowita wartość</string>
@@ -1063,6 +1061,39 @@
     <string name="trade_matching_transaction_found">Transakcja dopasowania znaleziona na koncie finansowania. Wybierz link:</string>
     <string name="asset_quantity_at_price">%1$s @ %2$s</string>
     <string name="contrib_feature_portfolio_tracking">Śledzenie portfela</string>
-    <string name="premium_nudge_portfolio_message">Możesz zarządzać jednym portfolio za darmo. Ulepsz się, aby zarządzać wieloma portfelami i odblokować zaawansowane funkcje śledzenia.</string>
+    <string name="premium_nudge_portfolio_message">Możesz zarządzać jednym portfelem za darmo. Przejdź na wersję Premium, aby zarządzać wieloma portfelami i odblokować zaawansowane funkcje (%1$s).</string>
     <string name="important_upgrade_information_heading">Ważna informacja</string>
+    <string name="pref_tag_style_title">Styl taga</string>
+    <string name="pref_tag_style_outline">Kolorowa ramka</string>
+    <string name="pref_tag_style_filled">Pełny kolor</string>
+    <string name="trade_additional_costs">Dodatkowe koszty</string>
+    <string name="search_fts_help_and">kawa herbata : znajduje transakcje zawierające zarówno kawę, jak i herbatę</string>
+    <string name="search_fts_help_not">kawa -herbata : znajduje transakcje z kawą, ale bez herbaty</string>
+    <string name="search_fts_help_or">kawa OR herbata : znajduje transakcje z kawą lub herbatą</string>
+    <string name="search_fts_help_phrase">\"kawa i herbata\" : znajduje dokładną frazę \"kawa i herbata\"</string>
+    <string name="search_fts_help_prefix">kaw* : znajduje słowa rozpoczynające się od kaw (np. kawa, kawiarnia)</string>
+    <string name="search_fts_help_column">Dodaj prefiks, aby ograniczyć wyszukiwanie do określonej kolumny (np. payee:sklep, category:jedzenie, tag:praca). Dostępne: \'comment\' (notatki), \'payee\' (odbiorca/płatnik), \'category\' (kategoria), \'tag\' (tagi), \'ref\' (numer referencyjny)</string>
+    <string name="full_text_search">Wyszukiwanie pełnotekstowe</string>
+    <string name="search_full_text">Szukaj we wszystkich polach</string>
+    <string name="search_fts_error_malformed">Niezupełny operator wyszukiwania lub niedopasowane cudzysłowy</string>
+    <string name="parent_category">Kategoria nadrzędna</string>
+    <plurals name="category_description_children_suffix">
+        <item quantity="one">, zawiera 1 podkategorię poziomu %2$d.</item>
+        <item quantity="few">, zawiera %1$d podkategorie poziomu %2$d.</item>
+        <item quantity="many">, zawiera %1$d podkategorii poziomu %2$d.</item>
+        <item quantity="other">, zawiera %1$d podkategorii poziomu %2$d.</item>
+    </plurals>
+    <string name="dialog_title_warning_delete_closed_account">Usunąć zamknięte konto?</string>
+    <string name="help_floating_action_button">Pływający przycisk akcji</string>
+    <string name="remap_update_value_date">Zaktualizuj także datę waluty</string>
+    <string name="search_asset">Szukaj aktywa</string>
+    <string name="single_pane_view">Pojedynczy panel</string>
+    <string name="split_pane_view">Widok dzielony</string>
+    <string name="trade_add_cost">Dodaj koszt</string>
+    <plurals name="warning_cleanup_parties">
+        <item quantity="one">%d nieużywany podmiot zostanie usunięty.</item>
+        <item quantity="few">%d nieużywane podmioty zostaną usunięte.</item>
+        <item quantity="many">%d nieużywanych podmiotów zostanie usuniętych.</item>
+        <item quantity="other">%d nieużywanych podmiotów zostanie usuniętych.</item>
+    </plurals>
 </resources>

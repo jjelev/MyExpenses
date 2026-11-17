@@ -116,12 +116,11 @@ import org.totschnig.myexpenses.feature.Payee
 import org.totschnig.myexpenses.feature.values
 import org.totschnig.myexpenses.injector
 import org.totschnig.myexpenses.model.ContribFeature
+import org.totschnig.myexpenses.model.ContribPayload
 import org.totschnig.myexpenses.model.CurrencyContext
 import org.totschnig.myexpenses.myApplication
 import org.totschnig.myexpenses.preference.PrefHandler
 import org.totschnig.myexpenses.preference.PrefKey
-import org.totschnig.myexpenses.util.config.Configurator
-import org.totschnig.myexpenses.util.config.get
 import org.totschnig.myexpenses.provider.DatabaseConstants
 import org.totschnig.myexpenses.provider.KEY_AMOUNT
 import org.totschnig.myexpenses.provider.KEY_COLOR
@@ -143,6 +142,7 @@ import org.totschnig.myexpenses.util.PermissionHelper.PermissionGroup
 import org.totschnig.myexpenses.util.PictureDirHelper
 import org.totschnig.myexpenses.util.Utils
 import org.totschnig.myexpenses.util.ads.AdHandlerFactory
+import org.totschnig.myexpenses.util.config.Configurator
 import org.totschnig.myexpenses.util.crashreporting.CrashHandler
 import org.totschnig.myexpenses.util.crashreporting.CrashHandler.Companion.report
 import org.totschnig.myexpenses.util.distrib.DistributionHelper.getVersionInfo
@@ -159,7 +159,6 @@ import org.totschnig.myexpenses.viewmodel.FeatureViewModel
 import org.totschnig.myexpenses.viewmodel.OcrViewModel
 import org.totschnig.myexpenses.viewmodel.data.EventObserver
 import org.totschnig.myexpenses.widget.EXTRA_START_FROM_WIDGET_DATA_ENTRY
-import java.io.Serializable
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalTime
@@ -321,7 +320,7 @@ abstract class BaseActivity : AppCompatActivity(), MessageDialogFragment.Message
         }
     }
 
-    override fun contribFeatureCalled(feature: ContribFeature, tag: Serializable?) {
+    override fun contribFeatureCalled(feature: ContribFeature, tag: ContribPayload?) {
         when (feature) {
             ContribFeature.BANKING -> {
                 if (featureViewModel.isFeatureAvailable(this, Feature.FINTS)) {
@@ -765,7 +764,6 @@ abstract class BaseActivity : AppCompatActivity(), MessageDialogFragment.Message
                 PrefKey.PROTECTION_DEVICE_LOCK_SCREEN,
                 PrefKey.PROTECTION_LEGACY,
                 PrefKey.UI_FONT_SIZE,
-                PrefKey.CUSTOMIZE_MAIN_MENU,
                 PrefKey.UI_ITEM_RENDERER_ORIGINAL_AMOUNT,
                 PrefKey.CUSTOM_DATE_FORMAT_NEW_TRANSACTION_LIST
             )
@@ -1215,7 +1213,7 @@ abstract class BaseActivity : AppCompatActivity(), MessageDialogFragment.Message
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
-    open fun contribFeatureRequested(feature: ContribFeature, tag: Serializable? = null) {
+    open fun contribFeatureRequested(feature: ContribFeature, tag: ContribPayload? = null) {
         if (licenceHandler.hasAccessTo(feature)) {
             (this as ContribIFace).contribFeatureCalled(feature, tag)
         } else {
@@ -1223,7 +1221,7 @@ abstract class BaseActivity : AppCompatActivity(), MessageDialogFragment.Message
         }
     }
 
-    open fun showContribDialog(feature: ContribFeature? = null, tag: Serializable? = null) {
+    open fun showContribDialog(feature: ContribFeature? = null, tag: ContribPayload? = null) {
         startActivityForResult(getIntentFor(this, feature).apply {
             putExtra(ContribInfoDialogActivity.KEY_TAG, tag)
         }, CONTRIB_REQUEST)
@@ -1481,7 +1479,7 @@ abstract class BaseActivity : AppCompatActivity(), MessageDialogFragment.Message
         (application as MyApplication).invalidateHomeCurrency()
         if (!isFinishing) {
             finishAffinity()
-            startActivity(Intent(this, prefHandler.mainScreenClass).apply {
+            startActivity(Intent(this, MyExpensesV2::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             })
         }
@@ -1804,5 +1802,6 @@ abstract class BaseActivity : AppCompatActivity(), MessageDialogFragment.Message
         const val RESULT_RESTORE_OK = RESULT_FIRST_USER + 1
         const val RESULT_INVALIDATE_OPTIONS_MENU = RESULT_FIRST_USER + 2
         const val KEY_IS_MANUAL_RECREATE = "IS_MANUAL_RECREATE"
+        const val DIALOG_TAG_OCR_DISAMBIGUATE = "DISAMBIGUATE"
     }
 }

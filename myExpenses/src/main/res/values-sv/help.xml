@@ -6,16 +6,14 @@
     <string name="popup_MyExpenses_toolbar_copy_text">Kopiera det aktuella saldot till klippbordet.</string>
     <string name="popup_MyExpenses_toolbar_new_balance">Beräkna skillnaden mellan det aktuella saldot och ett nytt värde.</string>
     <string name="help_menu_commands">Menykommandon</string>
-    <string name="help_MyExpenses_info">Den här skärmen listar alla transaktioner för det aktuella kontot. Använd den flytande åtgärdsknappen för att öppna formuläret för att skapa en ny transaktion.</string>
     <string name="help_form_fields">Formulärfält</string>
-    <string name="help_MyExpenses_fab_long_press">Att trycka länge på den flytande åtgärdsknappen öppnar en meny som tillåter förberedelsen av formuläret för överföring, uppdelad transaktion eller inkomst.</string>
     <string name="help_ManageTemplates_plans_title">Planera kalendervy</string>
     <string name="menu_sort_direction_help_text">Transaktionerna kan sorteras i stigande (äldst överst) eller fallande (senaste överst) ordning.</string>
     <string name="help_contextual_actions_help">Menyn för sammanhängande åtgärder visas genom att knacka länge på post i listan.</string>
     <string name="menu_status_handle_help_text">Transaktionens status visas med en färglagd rektangel: grå för oavstämd, blå för bokförd, grön för avstämd. Statusen ändras vid tryck på rektangeln.</string>
     <string name="menu_budget_help_text">Hantera dagliga, veckovisa, månatliga eller årliga budgetar för det konto som visas för tillfället.</string>
     <string name="help_MyExpenses_title">Lista över transaktioner</string>
-    <string name="popup_MyExpenses_toolbar_intro">Vid tryck på (kontoetikett eller aktuellt saldo) så dyker en meny upp med följande inmatningar:</string>
+    <string name="popup_MyExpenses_toolbar_intro">Vid tryck på (kontoetikett eller aktuellt saldo) så dyker en detaljerad kontoöversikt och en meny upp med följande inmatningar:</string>
     <string name="menu_print_help_text">Genererar en utskriftsvänlig vy över de transaktioner som visas för tillfället.</string>
     <string name="help_ManageParties_manage_info">Den här skärmen listar alla parter som används för automatisk komplettering för Betalare/Betalningsmottagare-fältet.</string>
     <string name="menu_scan_mode_help_text">Aktivera skanningsläge för att snabbt kunna skanna kvitton.</string>
@@ -91,4 +89,9 @@
     <string name="help_ManageCategories_select_mapping_info">Utöver de åtgärder du kan vidta när du hanterar kategorier från inställningsskärmen (skapa, redigera, radera) kan du på denna skärm koppla en transaktion till en vald kategori genom att helt enkelt klicka på den.</string>
     <string name="help_MyExpensesV2_portfolio_info">Följ dina investeringar i denna portfölj. Du kan importera dina transaktioner och se hur dina tillgångar är fördelade. Kontoöversikten länkar till prisskärmen, där det aktuella priset för en tillgång kan anges.</string>
     <string name="menu_import_trades_help_text">Importera investeringstransaktioner till din portfölj från en CSV-fil.</string>
+    <string name="help_ManageCategories_manage_info">Den här skärmen låter dig skapa, redigera och radera kategorier. Som standard är det primära sorteringskriteriet för kategorilistan antalet gånger du har använt en kategori (det sekundära kriteriet är alfabetisk ordning). Detta ger dig snabb tillgång till de kategorier du oftast använder.</string>
+    <string name="menu_back_help_text">Navigera till föregående grupp. Kan också uppnås med en svepgest från vänster till höger.</string>
+    <string name="menu_forward_help_text">Navigera till nästa grupp. Kan också uppnås med en svepgest från höger till vänster.</string>
+    <string name="form_amount_switch_help_text">Använd omkopplaren för att växla mellan utgift och intäkt.</string>
+    <string name="form_attach_image_help_text"><![CDATA[<img src=\"android:ic_menu_camera\">-knappen låter dig bifoga en bild (t.ex. från galleriet eller kameran) till objektet.]]></string>
 </resources>

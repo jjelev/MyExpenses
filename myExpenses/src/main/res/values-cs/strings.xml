@@ -610,7 +610,6 @@
     <string name="licence_has_expired_n_days">Platnost vašeho profesionálního klíče vypršela před %d dny.</string>
     <string name="gdpr_consent_button_no">Zaplaťte si verzi bez reklam</string>
     <string name="sort_order">Pořadí řazení</string>
-    <string name="navigation_drawer_accounts_title">Spravovat účty</string>
     <string name="pref_sync_wifi_only_summary">Synchronizovat pouze při připojení k síti Wi-Fi</string>
     <string name="pref_sync_changes_immediately_summary">Okamžitě zapsat místní změny na back-end</string>
     <string name="synchronization_postponed">Synchronizace je odložena.</string>
@@ -1000,7 +999,6 @@
     <string name="budget_import_none_found">Žádné rozpočty nenalezeny.</string>
     <string name="webui_download_no_data">Po vytištění, exportu nebo vytvoření záloh v aplikaci budou soubory dostupné ke stažení zde.</string>
     <string name="filter_dialog_empty">Žádná kritéria zatím nebyla přidána. Klepněte na tlačítka výše, abyste definovali svůj dotaz a upřesnili výsledky.</string>
-    <string name="menu_show_equivalent_value">Ekvivalentní hodnota</string>
     <string name="initial_value">Počáteční hodnota</string>
     <string name="current_value">Současná hodnota</string>
     <string name="total_value">Celková hodnota</string>
@@ -1106,6 +1104,26 @@
     <string name="trade_withdraw">Výběr</string>
     <string name="trade_matching_transaction_found">Shodná transakce nalezená na účtu financování. Vyberte pro propojení:</string>
     <string name="contrib_feature_portfolio_tracking">Sledování portfolia</string>
-    <string name="premium_nudge_portfolio_message">Jedno portfolio můžete spravovat zdarma. Upgradujte na správu více portfolií a odemkněte pokročilé funkce sledování.</string>
+    <string name="premium_nudge_portfolio_message">Jedno portfolio můžete spravovat zdarma. Upgradujte na správu více portfolií a odemkněte pokročilé funkce (včetně %1$s).</string>
     <string name="help_floating_action_button">Plovoucí akční tlačítko</string>
+    <string name="pref_tag_style_title">Styl štítku</string>
+    <string name="pref_tag_style_outline">Barevný okraj</string>
+    <string name="pref_tag_style_filled">Plně barevné</string>
+    <string name="trade_additional_costs">Dodatečné náklady</string>
+    <string name="search_fts_help_and">káva čaj : najde transakce obsahující kávu i čaj</string>
+    <string name="search_fts_help_not">káva -čaj : najde transakce s kávou, ale bez čaje</string>
+    <string name="search_fts_help_or">káva OR čaj : najde transakce s kávou nebo čajem</string>
+    <string name="search_fts_help_phrase">\"káva a čaj\" : najde přesnou frázi \"káva a čaj\"</string>
+    <string name="search_fts_help_prefix">káv* : najde slova začínající na káv (např. káva, kavárna)</string>
+    <string name="search_fts_help_column">Použijte předponu pro omezení vyhledávání na konkrétní sloupec (např. payee:obchod, category:jídlo, tag:práce). Dostupné: \'comment\' (poznámky), \'payee\' (příjemce/platce), \'category\' (kategorie), \'tag\' (štítky), \'ref\' (referenční číslo)</string>
+    <string name="full_text_search">Celotextové vyhledávání</string>
+    <string name="search_full_text">Hledat ve všech polích</string>
+    <string name="search_fts_error_malformed">Neúplný vyhledávací operátor nebo neuzavřené uvozovky</string>
+    <string name="parent_category">Nadřazená kategorie</string>
+    <string name="dialog_title_warning_delete_closed_account">Smazat uzavřený účet?</string>
+    <string name="remap_update_value_date">Taktéž aktualizovat datum valuty</string>
+    <string name="search_asset">Hledat aktivum</string>
+    <string name="single_pane_view">Jednoduchý panel</string>
+    <string name="split_pane_view">Rozdělené zobrazení</string>
+    <string name="trade_add_cost">Přidat náklad</string>
 </resources>

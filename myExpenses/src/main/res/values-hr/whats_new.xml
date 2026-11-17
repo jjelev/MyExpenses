@@ -1,20 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="whats_new_361_1">Popis transakcija se može razvrstati po iznosu.</string>
-    <string name="whats_new_361_2">Datoteke u mapi aplikacije (sigurnosne kopije i izvozi) se mogu dijeliti ili izbrisati.</string>
-    <string name="whats_new_364_2">Nova strategija za upravljanje podacima duplih platiša/primalaca</string>
-    <string name="whats_new_365">Priloži proizvoljan broj slika i dokumenata (PDF)</string>
-    <string name="whats_new_364_1">Uvoz u više računa iz jedne CSV datoteke</string>
-    <string name="whats_new_366">Widget na početnom ekranu koji prikazuje aktualno stanje budžeta.</string>
-    <string name="whats_new_369_1">Prijenosi se mogu dodijeliti kategorijama.</string>
-    <string name="whats_new_369_2">Kada je zaključavanje ekrana aktivirano, dozvoli opciju onemogućavanja snimanja snimki ekrana.</string>
-    <string name="whats_new_370">Izbornik u glavnom ekranu se može potpuno prilagoditi.</string>
-    <string name="whats_new_367">Kategorije se sada mogu konfigurirati kao kategorije troškova ili prihoda, što će utjecati na način na koji se izračunavaju iznosi troškova i prihoda.</string>
-    <string name="whats_new_374">Prilagođene boje za oznake</string>
-    <string name="whats_new_376_2">Korisničkim web sučeljem se može upravljati u glavnom ekranu.</string>
-    <string name="whats_new_382">Funkcija %1$s se može pozvati putem widgeta %2$s.</string>
-    <string name="whats_new_376_1">Kloniraj višestruke transakcije s novim datumom.</string>
-    <string name="whats_new_378">Grafikoni uzimaju u obzir filtar pretrage.</string>
     <string name="whats_new_384">Pojednostavljeno postavljanje sigurnosnog kopiranja u oblaku</string>
     <string name="whats_new_386">Distribucija po troškovima i distribucija po prihodu mogu se prikazati zajedno u dvostrukom kružnom dijagramu.</string>
     <string name="whats_new_388">Transakcije se mogu arhivirati.</string>
@@ -27,8 +12,8 @@
     <string name="whats_new_401">Popis transakcija sada prikazuje više detalja za podijeljene transakcije.</string>
     <string name="whats_new_402">Vrste računa se mogu prilagoditi</string>
     <string name="whats_new_403">Značke računa proširuju prilagodbu vidljivosti i prioriteta računa.</string>
-    <string name="migration_v2_opt_out_warning">Voljeli bismo znati što ne radi kako bismo mogli poboljšati V2.</string>
-    <string name="migration_v2_feedback_title">Što ne radi u V2?</string>
-    <string name="migration_v2_confirm_opt_out">Vrati se na V1</string>
     <string name="whats_new_407">Prirodno sortiranje za oznake, kategorije, račune, stranke.</string>
+    <string name="whats_new_411_1">Višedjelni prijenosi</string>
+    <string name="whats_new_411_2">Prijenosi imovine između portfelja</string>
+    <string name="whats_new_411_3">Ekran povijesti za agregirane račune sada odražava promjenu vrijednosti stranih valuta</string>
 </resources>

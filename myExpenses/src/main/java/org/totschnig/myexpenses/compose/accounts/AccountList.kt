@@ -3,7 +3,6 @@ package org.totschnig.myexpenses.compose.accounts
 import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -26,9 +24,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.text.appendInlineContent
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.ShowChart
-import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.Functions
 import androidx.compose.material.icons.filled.Lock
@@ -40,24 +37,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalResources
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -99,7 +92,6 @@ import org.totschnig.myexpenses.compose.main.deltaLabel
 import org.totschnig.myexpenses.compose.main.validatedBalanceType
 import org.totschnig.myexpenses.compose.optional
 import org.totschnig.myexpenses.compose.scrollbar.LazyColumnWithScrollbar
-import org.totschnig.myexpenses.compose.scrollbar.LazyColumnWithScrollbarAndBottomPadding
 import org.totschnig.myexpenses.dialog.Percent
 import org.totschnig.myexpenses.model.AccountFlag
 import org.totschnig.myexpenses.model.AccountGrouping
@@ -108,15 +100,12 @@ import org.totschnig.myexpenses.model.AccountType
 import org.totschnig.myexpenses.model.BalanceType
 import org.totschnig.myexpenses.model.CurrencyUnit
 import org.totschnig.myexpenses.model.DEFAULT_FLAG_ID
-import org.totschnig.myexpenses.provider.DataBaseAccount.Companion.AGGREGATE_HOME_CURRENCY_CODE
-import org.totschnig.myexpenses.provider.DataBaseAccount.Companion.HOME_AGGREGATE_ID
 import org.totschnig.myexpenses.provider.PORTFOLIO_CONTAINER
 import org.totschnig.myexpenses.util.calculateRealExchangeRate
 import org.totschnig.myexpenses.util.convAmount
 import org.totschnig.myexpenses.util.isolateText
 import org.totschnig.myexpenses.viewmodel.data.AggregateAccount
 import org.totschnig.myexpenses.viewmodel.data.BaseAccount
-import org.totschnig.myexpenses.viewmodel.data.Currency
 import org.totschnig.myexpenses.viewmodel.data.FullAccount
 import java.text.DecimalFormat
 import kotlin.math.absoluteValue
@@ -135,86 +124,6 @@ sealed class AccountEvent {
 
 interface AccountEventHandler {
     operator fun invoke(event: AccountEvent, account: FullAccount)
-}
-
-@Composable
-fun AccountList(
-    modifier: Modifier = Modifier,
-    accountData: List<FullAccount>,
-    grouping: AccountGrouping<*>,
-    selectedAccount: Long,
-    listState: LazyListState,
-    showEquivalentWorth: Boolean = false,
-    onSelected: (Long) -> Unit = {},
-    onEdit: (FullAccount) -> Unit = {},
-    onDelete: (FullAccount) -> Unit = {},
-    onSetFlag: (Long, Long) -> Unit = { _, _ -> },
-    onToggleSealed: (FullAccount) -> Unit = {},
-    onToggleExcludeFromTotals: (FullAccount) -> Unit = {},
-    onToggleDynamicExchangeRate: ((FullAccount) -> Unit)? = null,
-    flags: List<AccountFlag> = emptyList(),
-    expansionHandlerGroups: ExpansionHandler,
-    expansionHandlerAccounts: ExpansionHandler,
-    bankIcon: (@Composable (Modifier, Long) -> Unit)? = null,
-) {
-    val context = LocalContext.current
-    val collapsedGroupIds = expansionHandlerGroups.state.collectAsState(initial = null).value
-    val expandedAccountIds =
-        expansionHandlerAccounts.state.collectAsState(initial = null).value
-
-    if (collapsedGroupIds != null && expandedAccountIds != null) {
-        val grouped: Map<String, List<FullAccount>> =
-            accountData.groupBy { getHeaderId(grouping, it) }
-        LazyColumnWithScrollbarAndBottomPadding(
-            modifier = modifier.background(MaterialTheme.colorScheme.background),
-            state = listState,
-            itemsAvailable = accountData.size + grouped.size,
-            withFab = false,
-            testTag = TEST_TAG_ACCOUNTS,
-        ) {
-            grouped.forEach { group ->
-                val headerId = group.key
-                val isGroupHidden = collapsedGroupIds.contains(headerId)
-                item {
-                    Header(
-                        header = getHeaderTitle(
-                            context = context,
-                            grouping = grouping,
-                            account = group.value.first()
-                        ),
-                        isExpanded = !isGroupHidden,
-                        onToggleExpand = { expansionHandlerGroups.toggle(headerId) }
-                    )
-                }
-                if (!isGroupHidden) {
-                    group.value.forEachIndexed { index, account ->
-                        item(key = account.id) {
-                            //TODO add collectionItemInfo
-                            AccountCard(
-                                account = account,
-                                isCollapsed = !expandedAccountIds.contains(account.id.toString()),
-                                isSelected = account.id == selectedAccount,
-                                onSelected = { onSelected(account.id) },
-                                onEdit = onEdit,
-                                onDelete = onDelete,
-                                onSetFlag = onSetFlag,
-                                onToggleSealed = onToggleSealed,
-                                onToggleExcludeFromTotals = onToggleExcludeFromTotals,
-                                onToggleDynamicExchangeRate = onToggleDynamicExchangeRate,
-                                toggleExpansion = { expansionHandlerAccounts.toggle(account.id.toString()) },
-                                bankIcon = bankIcon,
-                                showEquivalentWorth = showEquivalentWorth,
-                                flags = flags
-                            )
-                            if (index != group.value.lastIndex) {
-                                Spacer(Modifier.height(10.dp))
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 @Composable
@@ -348,49 +257,6 @@ fun AccountListV2(
 
 
 @Composable
-private fun Header(
-    header: String,
-    isExpanded: Boolean,
-    onToggleExpand: () -> Unit,
-    onNavigate: (() -> Unit)? = null,
-) {
-    HorizontalDivider(
-        color = colorResource(id = androidx.appcompat.R.color.material_grey_300),
-        thickness = 2.dp
-    )
-    Row(
-        modifier = Modifier
-            .clickable(onClick = onNavigate ?: onToggleExpand)
-            .semantics(mergeDescendants = true) {}
-            .padding(start = dimensionResource(id = R.dimen.drawer_padding)),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            modifier = Modifier.weight(1f),
-            text = header,
-            style = MaterialTheme.typography.titleMedium,
-            color = colorResource(id = R.color.material_grey)
-        )
-        val rotationAngle by animateFloatAsState(
-            targetValue = if (isExpanded) 0F else 180F
-        )
-        Icon(
-            modifier = Modifier
-                .minimumInteractiveComponentSize()
-                .conditional(onNavigate != null) {
-                    clickable(onClick = onToggleExpand)
-                }
-                .rotate(rotationAngle),
-            imageVector = Icons.Default.ExpandLess,
-            contentDescription = stringResource(
-                id = if (isExpanded) R.string.collapse
-                else R.string.expand
-            )
-        )
-    }
-}
-
-@Composable
 private fun HeaderV2(
     header: String,
     onToggleExpand: (() -> Unit)?,
@@ -428,47 +294,12 @@ private fun HeaderV2(
         } else {
             IconButton(onClick = onNavigate) {
                 Icon(
-                    Icons.Filled.ChevronRight,
+                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     "VIEW ALL"
                 )
             }
         }
     }
-}
-
-private fun getHeaderId(
-    grouping: AccountGrouping<*>,
-    account: FullAccount,
-) = when (grouping) {
-    AccountGrouping.NONE -> if (account.id > 0) "0" else "1"
-
-    AccountGrouping.TYPE -> account.type.name
-
-    AccountGrouping.CURRENCY ->
-        if (account.id == HOME_AGGREGATE_ID) AGGREGATE_HOME_CURRENCY_CODE else account.currency
-
-    AccountGrouping.FLAG -> account.flag.label
-}
-
-private fun getHeaderTitle(
-    context: Context,
-    grouping: AccountGrouping<*>,
-    account: FullAccount,
-) = when (grouping) {
-    AccountGrouping.NONE -> context.getString(
-        if (account.id > 0) R.string.pref_manage_accounts_title else R.string.menu_aggregates
-    )
-
-    AccountGrouping.TYPE ->
-        if (account.isAggregate) context.getString(R.string.menu_aggregates) else
-            account.type.title(context)
-
-    AccountGrouping.CURRENCY -> if (account.id == HOME_AGGREGATE_ID)
-        context.getString(R.string.menu_aggregates)
-    else
-        Currency.create(account.currency, context).toString()
-
-    AccountGrouping.FLAG -> account.flag.title(context)
 }
 
 @Composable
@@ -638,7 +469,7 @@ fun AccountCardV2(
 
                 IconButton(onClick = onSelected) {
                     Icon(
-                        Icons.Filled.ChevronRight,
+                        Icons.AutoMirrored.Filled.KeyboardArrowRight,
                         contentDescription = stringResource(R.string.import_select_transactions)
                     )
                 }

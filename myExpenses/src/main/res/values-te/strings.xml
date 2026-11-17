@@ -39,7 +39,6 @@
     <string name="synchronization_postponed">సమకాలీకరణ వాయిదా పడింది.</string>
     <string name="pref_sync_changes_immediately_summary">స్థానిక మార్పులను వెంటనే బ్యాకెండ్‌కు వ్రాయండి</string>
     <string name="pref_sync_wifi_only_summary">Wi-Fi లో ఉన్నప్పుడు మాత్రమే సమకాలీకరించండి</string>
-    <string name="navigation_drawer_accounts_title">ఖాతాలను నిర్వహించండి</string>
     <string name="sort_order">క్రమాన్ని క్రమబద్ధీకరించు</string>
     <string name="gdpr_consent_button_no">ప్రకటన రహిత సంస్కరణ కోసం చెల్లించండి</string>
     <string name="licence_has_expired_n_days">మీ ప్రొఫెషనల్ కీ %d రోజుల క్రితం గడువు ముగిసింది.</string>
@@ -759,4 +758,9 @@
     <string name="pref_account_list_display_configuration_title">ఖాతా జాబితా</string>
     <string name="menu_templates">మూసలు</string>
     <string name="important_upgrade_information_heading">ముఖ్యమైన సమాచారం</string>
+    <string name="pref_tag_style_title">ట్యాగ్ శైలి</string>
+    <string name="pref_tag_style_outline">రంగుల సరిహద్దు</string>
+    <string name="pref_tag_style_filled">పూర్తిగా రంగుల</string>
+    <string name="trade_additional_costs">అదనపు ఖర్చులు</string>
+    <string name="contrib_feature_portfolio_tracking">పోర్ట్‌ఫోలియో ట్రాకింగ్</string>
 </resources>

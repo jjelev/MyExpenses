@@ -544,7 +544,6 @@
     <string name="licence_has_expired_n_days">Zure gako profesionala duela%d egun bertan behera geratu zen</string>
     <string name="gdpr_consent_button_no">Ordaindu iragarkiak ez ikusteko</string>
     <string name="sort_order">Sailkatze ordena</string>
-    <string name="navigation_drawer_accounts_title">Kudeatu kontuak</string>
     <string name="pref_sync_wifi_only_summary">Sinkronizatu bakarrik Wi-Fi konexio ona dagoenean</string>
     <!-- title of an entry on the Settings screen that shows information on how to contribute to the My Expenses Translations Project -->
     <string name="pref_translation_title">Itzulpena</string>
@@ -591,4 +590,9 @@
     <plurals name="warning_delete_tag">
         <item quantity="other">%1$s etiketa %2$d transakziorekin lotuta dago. Ezabatu egin behar da?</item>
     </plurals>
+    <string name="pref_tag_style_title">Etiketa-estiloa</string>
+    <string name="pref_tag_style_outline">Ertz koloreztatua</string>
+    <string name="pref_tag_style_filled">Guztiz koloreztatua</string>
+    <string name="trade_additional_costs">Kostu gehigarriak</string>
+    <string name="contrib_feature_portfolio_tracking">Portafolioaren jarraipena</string>
 </resources>

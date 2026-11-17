@@ -588,7 +588,6 @@
     <string name="licence_has_expired_n_days">Ihr professioneller Schlüssel ist vor %d Tagen abgelaufen.</string>
     <string name="gdpr_consent_button_no">Für die werbefreie Version bezahlen</string>
     <string name="sort_order">Sortierreihenfolge</string>
-    <string name="navigation_drawer_accounts_title">Konten verwalten</string>
     <string name="pref_sync_wifi_only_summary">Synchronisierung nur bei WLAN</string>
     <string name="pref_sync_changes_immediately_summary">Lokale Änderungen werden sofort in das Backend geschrieben</string>
     <string name="synchronization_postponed">Die Synchronisation wird verschoben.</string>
@@ -960,7 +959,6 @@
     <string name="pref_sync_frequency_summary_0">Setzen Sie diesen Wert auf 0, um die automatische Synchronisierung zu deaktivieren.</string>
     <string name="webui_download_no_data">Nach dem Drucken, Exportieren oder Erstellen von Backups in der App stehen die Dateien hier zum Download bereit.</string>
     <string name="filter_dialog_empty">Es wurden noch keine Kriterien hinzugefügt. Tippen Sie auf die Schaltflächen oben, um Ihre Abfrage zu definieren und Ihre Ergebnisse zu verfeinern.</string>
-    <string name="menu_show_equivalent_value">Äquivalenter Wert</string>
     <string name="initial_value">Anfangswert</string>
     <string name="current_value">Aktueller Wert</string>
     <string name="total_value">Gesamtwert</string>
@@ -1065,7 +1063,7 @@
     <string name="trade_matching_transaction_found">Passende Buchung im Finanzierungskonto gefunden. Zum Verknüpfen auswählen:</string>
     <string name="asset_quantity_at_price">%1$s zu %2$s</string>
     <string name="contrib_feature_portfolio_tracking">Portfolio-Tracking</string>
-    <string name="premium_nudge_portfolio_message">Sie können ein Portfolio kostenlos verwalten. Holen Sie sich das Upgrade, um mehrere Portfolios zu verwalten und erweiterte Tracking-Funktionen freizuschalten.</string>
+    <string name="premium_nudge_portfolio_message">Sie können ein Portfolio kostenlos verwalten. Holen Sie sich das Upgrade, um mehrere Portfolios zu verwalten und erweiterte Funktionen (%1$s) freizuschalten.</string>
     <string name="rounding">Rundung</string>
     <string name="parse_error_at_line">Fehler bei Zeile %1$d: %2$s</string>
     <plurals name="import_trades_missing_assets_message">
@@ -1077,4 +1075,23 @@
     <string name="important_upgrade_information_heading">Wichtige Information</string>
     <string name="search_asset">Suche nach Vermögenswert</string>
     <string name="help_floating_action_button">Schwebende Aktionsschaltfläche</string>
+    <string name="dialog_title_warning_delete_closed_account">Geschlossenes Konto löschen?</string>
+    <string name="remap_update_value_date">Auch Wertstellung aktualisieren</string>
+    <string name="pref_tag_style_title">Schlagwort-Stil</string>
+    <string name="pref_tag_style_outline">Farbiger Rand</string>
+    <string name="pref_tag_style_filled">Vollständig farbig</string>
+    <string name="trade_additional_costs">Zusätzliche Kosten</string>
+    <string name="trade_add_cost">Kosten hinzufügen</string>
+    <string name="single_pane_view">Einzelansicht</string>
+    <string name="split_pane_view">Geteilte Ansicht</string>
+    <string name="full_text_search">Volltextsuche</string>
+    <string name="search_full_text">Alle Felder durchsuchen</string>
+    <string name="search_fts_help_and">Kaffee Tee: findet Transaktionen mit Kaffee und Tee</string>
+    <string name="search_fts_help_not">Kaffee -Tee : Findet Transaktionen mit Kaffee, aber ohne Tee</string>
+    <string name="search_fts_help_or">Kaffee OR Tee: findet Transaktionen mit entweder Kaffee oder Tee</string>
+    <string name="search_fts_help_phrase">\"Kaffee und Tee\": Findet den genauen Ausdruck \"Kaffee und Tee\"</string>
+    <string name="search_fts_help_prefix">kaff*: findet Wörter beginnend mit Kaff (z.B. Kaffee, Kaffehaus)</string>
+    <string name="search_fts_help_column">Verwenden Sie ein Präfix für den Suchbegriff, um die Suche auf eine bestimmte Spalte zu beschränken (z. B. payee:aldi, category:Essen, tag:Arbeit). Verfügbare Begriffe: \'comment\' (Notizen), \'payee\' (Zahlungsempfänger), \'category\' (Kategorie), \'tag\' (Schlagworte), \'ref\' (Referenznummer)</string>
+    <string name="search_fts_error_malformed">Unvollständiger Suchoperator oder nicht übereinstimmende Anführungszeichen</string>
+    <string name="parent_category">Übergeordnete Kategorie</string>
 </resources>

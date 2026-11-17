@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="whats_new_361_1">Die Buchungsliste kann nach Betrag sortiert werden.</string>
-    <string name="whats_new_361_2">Dateien im Anwendungsordner (Backups und Export-Dateien) können geteilt oder gelöscht werden.</string>
-    <string name="whats_new_364_1">Import in mehrere Konten aus einer CSV-Datei</string>
-    <string name="whats_new_364_2">Neue Strategie für die Verwaltung von duplizierten Zahlern/Empfängern</string>
-    <string name="whats_new_365">Beliebig viele Bilder und Dokumente (PDF) können angehängt werden</string>
-    <string name="whats_new_366">Startbildschirm-Widget, das den aktuellen Status des Budgets anzeigt.</string>
-    <string name="whats_new_367">Kategorien können jetzt als Ausgaben- oder Einkommenskategorien konfiguriert werden, was sich auf die Berechnung der Ausgaben- und Einkommenssummen auswirkt.</string>
-    <string name="whats_new_369_1">Umbuchungen können Kategorien zugeordnet werden.</string>
-    <string name="whats_new_369_2">Wenn die Bildschirmsperre aktiviert ist, können Sie Screenshots erlauben.</string>
-    <string name="whats_new_370">Das Menü auf dem Hauptbildschirm kann vollständig angepasst werden.</string>
-    <string name="whats_new_374">Benutzerdefinierte Farben für Schlagwörter</string>
-    <string name="whats_new_376_1">Klonen Sie mehrere Buchungen mit einem neuen Datum.</string>
-    <string name="whats_new_376_2">Die Web-Benutzeroberfläche kann vom Hauptbildschirm aus gesteuert werden.</string>
-    <string name="whats_new_378">Diagramme berücksichtigen Suchfilter.</string>
     <string name="whats_new_382">Die Funktion %1$s kann vom Widget %2$s aufgerufen werden.</string>
     <string name="whats_new_384">Vereinfachte Einrichtung von Cloud-Backups</string>
     <string name="whats_new_386">Die Verteilung pro Ausgaben und die Verteilung pro Einkommen können zusammen in einem Doppelring-Donut-Diagramm dargestellt werden.</string>
@@ -27,18 +13,8 @@
     <string name="whats_new_401">In der Buchungsliste werden jetzt mehr Details für mehrteilige Buchungen angezeigt.</string>
     <string name="whats_new_402">Kontotypen können angepasst werden</string>
     <string name="whats_new_403">Markierungen für Konten erweitern die Anpassung der Sichtbarkeit und Priorität.</string>
-    <string name="migration_v2_opt_out_warning">Wir würden gerne wissen, was nicht funktioniert, damit wir V2 verbessern können.</string>
-    <string name="migration_v2_feedback_title">Was funktioniert in V2 nicht?</string>
-    <string name="migration_v2_confirm_opt_out">Zurück zu Version 1</string>
     <string name="whats_new_407">Natürliche Sortierung für Schlagwörter, Kategorien, Konten, Parteien.</string>
     <string name="whats_new_411_1">Mehrteilige Umbuchungen</string>
     <string name="whats_new_411_2">Vermögensübertragungen zwischen Portfolios</string>
     <string name="whats_new_411_3">History Screen für aggregierte Konten spiegelt nun die Wertänderung von Fremdwährungen wider</string>
-    <string name="sunset_v1_intro">Dies ist die letzte Version mit Version 1. Sie wird in Version 4.1.3 entfernt.</string>
-    <string name="sunset_v1_message_1_intro">Hilf uns, V2 zu verbessern:</string>
-    <string name="sunset_v1_message_2_intro">Funktionen, die es nur in V2 gibt:</string>
-    <string name="sunset_v1_message_2_body">Entdecken Sie neue Funktionen, die nur in Version 2 verfügbar sind, wie zum Beispiel Anlageportfolios.</string>
-    <string name="sunset_v1_message_3_intro">V1 weiter verwenden:</string>
-    <string name="sunset_v1_message_3_body">Um weiterhin Version 1 nutzen zu können, deaktivieren Sie bitte die automatischen Updates für {app_name} im {store}.</string>
-    <string name="switch_to_v2">Wechsel zu V2</string>
 </resources>

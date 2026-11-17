@@ -285,6 +285,8 @@ class MyExpensesV2 : BaseMyExpenses<MyExpensesV2ViewModel>(),
                                         .filter { it.isPortfolio && it.id != fullAccount.id }
                                         .map { it.id to it.labelV2(this@MyExpensesV2) },
                                     initialTrade = trade,
+                                    canAddMultipleCostLegs = viewModel.canAddMultipleCostLegs,
+                                    onShowUpgrade = { contribFeatureRequested(ContribFeature.PORTFOLIO) },
                                     onLookupMatchingTransactions = { accountId, total, date, isBuy ->
                                         viewModel.findMatchingTransactions(
                                             accountId,
@@ -362,8 +364,7 @@ class MyExpensesV2 : BaseMyExpenses<MyExpensesV2ViewModel>(),
                                             if (preCreateRowCheckForSealed()) {
                                                 when (event.action) {
                                                     Action.Scan -> contribFeatureRequested(
-                                                        ContribFeature.OCR,
-                                                        true
+                                                        ContribFeature.OCR
                                                     )
 
                                                     else -> createRow(
@@ -409,8 +410,7 @@ class MyExpensesV2 : BaseMyExpenses<MyExpensesV2ViewModel>(),
                                         }
 
                                         is AppEvent.ShowUpgrade -> contribFeatureRequested(
-                                            event.feature,
-                                            true
+                                            event.feature
                                         )
                                     }
                                 }

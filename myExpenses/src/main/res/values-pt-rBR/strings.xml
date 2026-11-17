@@ -583,11 +583,11 @@
     <string name="split_transaction_group_success">%1$d transações foram agrupadas em uma transação dividida com sucesso.</string>
     <string name="split_transaction_not_possible">Somente transações que possuam a mesma conta, contraparte e estado podem ser agrupadas numa transação dividida.</string>
     <string name="pref_transaction_time_summary">Permitir a definição da data exata da transação.</string>
-    <string name="pref_value_date_summary">Permite a definição de uma data da contabilização, além da data do pagamento. A data da transação ficará oculta. Essa configuração não se aplica a contas de dinheiro.</string>
+    <string name="pref_value_date_summary">Permite a definição de uma data de valor, além da data do lançamento. A data da transação ficará oculta. Essa configuração não se aplica a contas de dinheiro.</string>
     <!-- the date on which the transaction took place, aka transaction date, as opposed to value date -->
-    <string name="booking_date">Data do pagamento</string>
+    <string name="booking_date">Data do lançamento</string>
     <!-- the date when the entry to an account is considered effective in accounting (https://en.wikipedia.org/wiki/Value_date) as opposed to booking date -->
-    <string name="value_date">Data da contabilização</string>
+    <string name="value_date">Data de valor</string>
     <string name="licence_expires_n_days">A sua chave profissional irá expirar em %d dias.</string>
     <string name="licence_expires_tomorrow">A sua chave profissional irá expirar amanhã.</string>
     <string name="licence_expires_today">A sua chave profissional expira hoje.</string>
@@ -595,7 +595,6 @@
     <string name="licence_has_expired_n_days">A sua chave profissional expirou %d dias atrás.</string>
     <string name="gdpr_consent_button_no">Pagar pela versão sem anúncios</string>
     <string name="sort_order">Ordem de classificação</string>
-    <string name="navigation_drawer_accounts_title">Gerir contas</string>
     <string name="pref_sync_wifi_only_summary">Sincronizar somente via wi-fi</string>
     <string name="pref_sync_changes_immediately_summary">Escreve as alterações locais imediatamente no destino</string>
     <string name="synchronization_postponed">A sincronização foi adiada.</string>
@@ -654,8 +653,8 @@
     <string name="content_description_closed">Encerrada</string>
     <string name="warning_synced_account_cannot_be_closed">Uma conta vinculada a um destino de sincronização não pode ser encerrada</string>
     <string name="translated_by">Traduzido por</string>
-    <string name="content_description_dates_are_linked">A data do pagamento e a data da contabilização são atualizadas juntas</string>
-    <string name="content_description_dates_are_not_linked">A data do pagamento e a data da contabilização não são atualizadas juntas</string>
+    <string name="content_description_dates_are_linked">A data do lançamento e a data de valor são atualizadas juntas</string>
+    <string name="content_description_dates_are_not_linked">A data do lançamento e a data de valor não são atualizadas juntas</string>
     <string name="roadmap_vote">Votar no roteiro</string>
     <string name="warning_account_for_transaction_is_closed">Pelo menos uma das transações selecionadas não pode ser editada:</string>
     <string name="object_sealed">O objeto se refere a uma conta encerrada.</string>
@@ -960,7 +959,6 @@
     <string name="content_description_equivalent_amount">Defina o valor dessa transação em sua moeda de origem. Em vez de inserir o valor, você também pode inserir a taxa de câmbio para calculá-lo.</string>
     <string name="budget_import_can_be_imported">Os seguintes orçamentos podem ser importados:</string>
     <string name="webui_download_no_data">Depois de imprimir, exportar ou criar backups no aplicativo, os arquivos estarão disponíveis aqui para download.</string>
-    <string name="menu_show_equivalent_value">Valor equivalente</string>
     <string name="initial_value">Valor inicial</string>
     <string name="current_value">Valor atual</string>
     <string name="total_value">Valor total</string>
@@ -1072,7 +1070,7 @@
     <string name="trade_matching_transaction_found">Operação correspondente encontrada na conta de financiamento. Selecione para vincular:</string>
     <string name="asset_quantity_at_price">%1$s a %2$s</string>
     <string name="contrib_feature_portfolio_tracking">Acompanhamento de carteira</string>
-    <string name="premium_nudge_portfolio_message">Você pode gerenciar uma carteira gratuitamente. Atualize para gerenciar várias carteiras e desbloquear recursos avançados de acompanhamento.</string>
+    <string name="premium_nudge_portfolio_message">Você pode gerenciar uma carteira gratuitamente. Faça upgrade para gerenciar várias carteiras e desbloquear recursos avançados (%1$s).</string>
     <string name="parse_error_at_line">Erro na linha %1$d: %2$s</string>
     <plurals name="import_trades_missing_assets_message">
         <item quantity="one">%1$d line se refere a ativos desconhecidos: %2$s.</item>
@@ -1091,4 +1089,26 @@
     <string name="service_starting">Iniciando…</string>
     <string name="rounding">Arredondamento</string>
     <string name="important_upgrade_information_heading">Informações importantes</string>
+    <string name="single_pane_view">Painel único</string>
+    <string name="split_pane_view">Visualização dividida</string>
+    <string name="pref_tag_style_title">Estilo da etiqueta</string>
+    <string name="pref_tag_style_outline">Borda colorida</string>
+    <string name="pref_tag_style_filled">Totalmente colorido</string>
+    <string name="trade_additional_costs">Custos adicionais</string>
+    <string name="dialog_title_warning_delete_closed_account">Excluir conta fechada?</string>
+    <string name="search_asset">Busca por um ativo</string>
+    <string name="search_fts_help_and">café chá : encontra transações com café e chá</string>
+    <string name="search_fts_help_not">café -chá : encontra transações com café, mas sem chá</string>
+    <string name="search_fts_help_or">café OR chá : encontra transações com café ou chá</string>
+    <string name="search_fts_help_phrase">\"café e chá\" : encontra a frase exata \"café e chá\"</string>
+    <string name="search_fts_help_prefix">caf* : encontra palavras que começam por caf (ex. café, cafeteria)</string>
+    <string name="search_fts_help_column">Adicione um prefixo para restringir a busca a uma coluna específica (ex. payee:supermercado, category:alimentacao, tag:trabalho). Disponíveis: \'comment\' (notas), \'payee\' (beneficiário), \'category\' (categoria), \'tag\' (etiquetas), \'ref\' (número de referência)</string>
+    <string name="full_text_search">Pesquisa de texto completo</string>
+    <string name="search_full_text">Pesquisar em todos os campos</string>
+    <string name="search_fts_error_malformed">Operador de pesquisa incompleto ou aspas não correspondentes</string>
+    <string name="parent_category">Categoria mãe</string>
+    <string name="help_floating_action_button">Botão de ação flutuante</string>
+    <string name="remap_update_value_date">Também atualizar a data de valor</string>
+    <string name="trade_add_cost">Adicionar custo</string>
+    <string name="trade_transfer">Transferência</string>
 </resources>

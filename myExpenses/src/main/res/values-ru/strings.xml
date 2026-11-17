@@ -608,7 +608,6 @@
     <string name="licence_has_expired_n_days">Срок действия вашего профессионального ключа истек %d дней назад.</string>
     <string name="gdpr_consent_button_no">Оплатить за версию без рекламы</string>
     <string name="sort_order">Направление сортировки</string>
-    <string name="navigation_drawer_accounts_title">Управление счетами</string>
     <string name="pref_sync_wifi_only_summary">Синхронизировать только по Wi-Fi</string>
     <string name="pref_sync_changes_immediately_summary">Немедленная запись локальных изменений на сервер</string>
     <string name="synchronization_postponed">Синхронизация откладывается.</string>
@@ -962,7 +961,6 @@
     <string name="pref_sync_frequency_summary_0">Установите значение 0, чтобы отключить автоматическую синхронизацию.</string>
     <string name="webui_download_no_data">После печати, экспорта или создания резервных копий в приложении, файлы будут доступны для загрузки отсюда.</string>
     <string name="filter_dialog_empty">Критерии ещё не заданы. Нажмите кнопки выше, чтобы определить запрос и уточнить результаты.</string>
-    <string name="menu_show_equivalent_value">Эквивалентное значение</string>
     <string name="initial_value">Начальная стоимость</string>
     <string name="current_value">Текущая стоимость</string>
     <string name="total_value">Общая стоимость</string>
@@ -1082,9 +1080,30 @@
     <string name="trade_withdraw">Вывод средств</string>
     <string name="trade_matching_transaction_found">В счете финансирования найдена соответствующая транзакция. Выберите, чтобы связать:</string>
     <string name="contrib_feature_portfolio_tracking">Отслеживание портфеля</string>
-    <string name="premium_nudge_portfolio_message">Вы можете бесплатно управлять одним портфелем. Перейдите на обновленную версию, чтобы управлять несколькими портфелями и разблокировать расширенные функции отслеживания.</string>
+    <string name="premium_nudge_portfolio_message">Вы можете бесплатно управлять одним портфелем. Перейдите на Premium, чтобы управлять несколькими портфелями и разблокировать расширенные функции (%1$s).</string>
     <string name="parse_error_at_line">Ошибка в строке %1$d: %2$s</string>
     <string name="rounding">Округление</string>
     <string name="trade_transfer">Перевод</string>
     <string name="important_upgrade_information_heading">Важная информация</string>
+    <string name="pref_tag_style_title">Стиль тега</string>
+    <string name="pref_tag_style_outline">Цветная рамка</string>
+    <string name="pref_tag_style_filled">Полностью цветной</string>
+    <string name="trade_additional_costs">Дополнительные расходы</string>
+    <string name="search_fts_help_and">кофе чай : находит транзакции с кофе и чаем</string>
+    <string name="search_fts_help_not">кофе -чай : находит транзакции с кофе, но без чая</string>
+    <string name="search_fts_help_or">кофе OR чай : находит транзакции либо с кофе, либо с чаем</string>
+    <string name="search_fts_help_phrase">\"кофе и чай\" : находит точную фразу \"кофе и чай\"</string>
+    <string name="search_fts_help_prefix">коф* : находит слова, начинающиеся с коф (например: кофе, кофейня)</string>
+    <string name="search_fts_help_column">Используйте префикс, чтобы ограничить поиск конкретным столбцом (например: payee:магазин, category:еда, tag:работа). Доступные столбцы: \'comment\' (заметки), \'payee\' (получатель/плательщик), \'category\' (категория), \'tag\' (теги), \'ref\' (номер ссылки)</string>
+    <string name="full_text_search">Полнотекстовый поиск</string>
+    <string name="search_full_text">Искать во всех полях</string>
+    <string name="search_fts_error_malformed">Неполный оператор поиска или незакрытые кавычки</string>
+    <string name="parent_category">Родительская категория</string>
+    <string name="dialog_title_warning_delete_closed_account">Удалить закрытый счет?</string>
+    <string name="help_floating_action_button">Плавающая кнопка действия</string>
+    <string name="remap_update_value_date">Также обновить дату валютирования</string>
+    <string name="search_asset">Поиск актива</string>
+    <string name="single_pane_view">Одиночная панель</string>
+    <string name="split_pane_view">Разделенный вид</string>
+    <string name="trade_add_cost">Добавить расходы</string>
 </resources>

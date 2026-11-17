@@ -175,10 +175,11 @@ data class MenuEntry(
 @Composable
 fun OverFlowMenu(
     modifier: Modifier = Modifier,
+    testTag: String = TEST_TAG_OVERFLOW_MENU,
     menu: Menu,
 ) {
     TooltipIconMenu(
-        modifier = modifier.testTag(TEST_TAG_OVERFLOW_MENU),
+        modifier = modifier.testTag(testTag),
         tooltip = stringResource(id = androidx.appcompat.R.string.abc_action_menu_overflow_description),
         imageVector = Icons.Filled.MoreVert,
         menu = menu,

@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import org.totschnig.myexpenses.MyApplication
 import org.totschnig.myexpenses.preference.PrefHandler
 import org.totschnig.myexpenses.preference.PrefKey
+import org.totschnig.myexpenses.preference.isOnboardingCompleted
 import org.totschnig.myexpenses.provider.DataBaseAccount
 import org.totschnig.myexpenses.provider.KEY_CODE
 import org.totschnig.myexpenses.provider.KEY_COMMODITY_TYPE
@@ -53,12 +54,17 @@ open class DatabaseCurrencyContext(
         val commodityType = getEnum(KEY_COMMODITY_TYPE, CommodityType.FIAT)
 
         val (symbol, fractionDigits, label) = if (dbSymbol == null || dbFractionDigits == null || dbLabel == null) {
-            val javaCurrency = try { Currency.getInstance(code) } catch (_: Exception) { null }
+            val javaCurrency = try {
+                Currency.getInstance(code)
+            } catch (_: Exception) {
+                null
+            }
             Triple(
                 dbSymbol ?: javaCurrency?.getSymbol(application.userPreferredLocale) ?: "¤",
-                dbFractionDigits ?: javaCurrency?.defaultFractionDigits?.takeIf { it != -1 } ?: DEFAULT_FRACTION_DIGITS,
+                dbFractionDigits ?: javaCurrency?.defaultFractionDigits?.takeIf { it != -1 }
+                ?: DEFAULT_FRACTION_DIGITS,
                 dbLabel ?: javaCurrency?.getDisplayName(application.userPreferredLocale)
-                    ?: runCatching { CurrencyEnum.valueOf(code).description }.getOrDefault(code)
+                ?: runCatching { CurrencyEnum.valueOf(code).description }.getOrDefault(code)
             )
         } else Triple(dbSymbol, dbFractionDigits, dbLabel)
 
@@ -132,8 +138,12 @@ open class DatabaseCurrencyContext(
         cursor.toCurrencyUnit()
     })
 
-    private fun fetchCurrency(currencyCode: String): CurrencyUnit =
-        contentResolver.query(
+    private fun fetchCurrency(currencyCode: String): CurrencyUnit {
+        if (!prefHandler.isOnboardingCompleted) {
+            return runCatching { CurrencyUnit(Currency.getInstance(currencyCode)) }
+                .getOrElse { CurrencyUnit(currencyCode, currencyCode, 2) }
+        }
+        return contentResolver.query(
             TransactionProvider.CURRENCIES_URI,
             null,
             "$KEY_CODE = ?",
@@ -143,6 +153,7 @@ open class DatabaseCurrencyContext(
             if (cursor.moveToFirst()) cursor.toCurrencyUnit() else null
         } ?: runCatching { CurrencyUnit(Currency.getInstance(currencyCode)) }
             .getOrElse { CurrencyUnit(currencyCode, currencyCode, 2) }
+    }
 
     override fun invalidate(currencyCode: String) {
         instances.remove(currencyCode)
@@ -161,16 +172,25 @@ open class DatabaseCurrencyContext(
     override val localCurrency: Currency by lazy {
         Utils.getCountryFromTelephonyManager(application)?.let {
             try {
-                Currency.getInstance(Locale("", it))
+                getCurrencyForCountry(it)
             } catch (_: Exception) {
                 null
             }
         } ?: Utils.getSaveDefault()
     }
 
+    fun getCurrencyForCountry(country: String): Currency =
+        if (country.equals("BG", ignoreCase = true)) {
+            Currency.getInstance("EUR")
+        } else {
+            Currency.getInstance(Locale("", country))
+        }
+
     override fun preload() {
-        scope.launch {
-            preloadCurrencies()
+        if (prefHandler.isOnboardingCompleted) {
+            scope.launch {
+                preloadCurrencies()
+            }
         }
     }
 }

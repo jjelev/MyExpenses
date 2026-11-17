@@ -106,13 +106,13 @@ abstract class BaseMyExpensesTest : BaseComposeTest<MyExpensesV2>() {
         composeTestRule.onNodeWithTag(testTag).performClick()
     }
 
-    fun clickMenuItemOverflowCompose(testTag: String) {
+    fun clickMenuItemOverflowCompose(testTag: String, menuTestTag: String = TEST_TAG_OVERFLOW_MENU) {
         // 1. Check if the item is already visible (e.g. on tablet or as a quick action)
         val nodes = composeTestRule.onAllNodesWithTag(testTag).fetchSemanticsNodes()
 
         if (nodes.isEmpty()) {
             // 2. Not found, open the overflow menu
-            composeTestRule.onNodeWithTag(TEST_TAG_OVERFLOW_MENU).performClick()
+            composeTestRule.onNode(hasTestTag(menuTestTag)).performClick()
         }
 
         // 3. Click the item

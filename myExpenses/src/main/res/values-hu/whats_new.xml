@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="whats_new_374">Egyedi színek a címkékhez</string>
     <string name="whats_new_384">A felhőalapú biztonsági mentés egyszerűsített beállítása</string>
     <string name="whats_new_386">A kiadások szerinti eloszlás és a jövedelemenkénti eloszlás együtt mutatható be a kettős gyűrűs fánkdiagramon.</string>
     <string name="whats_new_388">A tranzakciók archiválhatók.</string>
@@ -13,8 +12,5 @@
     <string name="whats_new_401">A tranzakciólista mostantól további részleteket jelenít meg a felosztási tranzakciókról.</string>
     <string name="whats_new_402">A számlatípusok testreszabhatók</string>
     <string name="whats_new_403">A fiókjelzők kiterjesztik a fiók láthatóságának és prioritásának testreszabását.</string>
-    <string name="migration_v2_opt_out_warning">Nagyon szeretnénk tudni, mi nem működik, hogy javíthassuk a V2-t.</string>
-    <string name="migration_v2_feedback_title">Mi nem működik a V2-ben?</string>
-    <string name="migration_v2_confirm_opt_out">Térj vissza a V1-hez</string>
     <string name="whats_new_407">Természetes sorrend a címkék, kategóriák, számlák és résztvevők számára.</string>
 </resources>

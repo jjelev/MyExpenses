@@ -6,6 +6,7 @@ import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.text.format.DateFormat
@@ -13,6 +14,7 @@ import android.text.method.LinkMovementMethod
 import android.util.Size
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.TouchDelegate
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -31,6 +33,7 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.AccessibilityDelegateCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
+import androidx.core.view.doOnLayout
 import androidx.core.widget.ImageViewCompat
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -39,6 +42,9 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import org.totschnig.myexpenses.R
 import org.totschnig.myexpenses.activity.BaseActivity
 import org.totschnig.myexpenses.injector
@@ -57,11 +63,7 @@ import org.totschnig.myexpenses.util.readPrimaryTextColor
 import org.totschnig.myexpenses.util.ui.UiUtils.DateMode
 import org.totschnig.myexpenses.viewmodel.ContentResolvingAndroidViewModel.Companion.lazyMap
 import org.totschnig.myexpenses.viewmodel.data.AttachmentInfo
-import org.totschnig.myexpenses.viewmodel.data.BaseAccount
 import org.totschnig.myexpenses.viewmodel.data.PageAccount
-import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 interface Itag {
     val label: String
@@ -70,24 +72,45 @@ interface Itag {
     val color: Int?
 }
 
-
 fun <T : Itag> ChipGroup.addChipsBulk(
     chips: Iterable<T>,
-    closeFunction: ((T) -> Unit)? = null,
+    closeFunction: ((T) -> Unit)? = null
 ) {
     removeAllViews()
     for (chip in chips) {
-        addView(ScrollingChip(context).also { scrollingChip ->
-            scrollingChip.text = chip.label
-            chip.color?.let { scrollingChip.setColor(it) }
-            closeFunction?.let {
-                scrollingChip.isCloseIconVisible = true
-                scrollingChip.setOnCloseIconClickListener {
-                    removeView(scrollingChip)
-                    it(chip)
+        addView(
+            ScrollingChip(context).also { scrollingChip ->
+                scrollingChip.text = chip.label
+                chip.color?.let { scrollingChip.setColor(it) }
+                closeFunction?.let {
+                    scrollingChip.isCloseIconVisible = true
+                    scrollingChip.setOnCloseIconClickListener {
+                        removeView(scrollingChip)
+                        it(chip)
+                    }
                 }
             }
-        })
+        )
+    }
+}
+
+fun View.expandTouchTarget(targetMinDp: Int = 48) {
+    val parentView = parent as? View ?: return
+    parentView.doOnLayout {
+        val rect = Rect()
+        getHitRect(rect)
+        val targetPx = (targetMinDp * resources.displayMetrics.density).toInt()
+        val heightDiff = targetPx - rect.height()
+        if (heightDiff > 0) {
+            rect.top -= heightDiff / 2
+            rect.bottom += heightDiff / 2
+        }
+        val widthDiff = targetPx - rect.width()
+        if (widthDiff > 0) {
+            rect.left -= widthDiff / 2
+            rect.right += widthDiff / 2
+        }
+        parentView.touchDelegate = TouchDelegate(rect, this)
     }
 }
 
@@ -95,7 +118,8 @@ fun colorWithPressedFeedback(@ColorInt base: Int) = ColorStateList(
     arrayOf(
         intArrayOf(android.R.attr.state_pressed),
         intArrayOf(android.R.attr.state_enabled)
-    ), intArrayOf(
+    ),
+    intArrayOf(
         ColorUtils.setAlphaComponent(base, 128),
         base
     )
@@ -119,10 +143,12 @@ fun ScrollView.postScrollToBottom() {
 
 fun setNightMode(prefHandler: PrefHandler, context: Context) {
     AppCompatDelegate.setDefaultNightMode(
-        when (prefHandler.getString(
-            PrefKey.UI_THEME,
-            context.getString(R.string.pref_ui_theme_default)
-        )) {
+        when (
+            prefHandler.getString(
+                PrefKey.UI_THEME,
+                context.getString(R.string.pref_ui_theme_default)
+            )
+        ) {
             "dark" -> AppCompatDelegate.MODE_NIGHT_YES
             "light" -> AppCompatDelegate.MODE_NIGHT_NO
             else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
@@ -144,17 +170,20 @@ fun <T : View> findParentWithTypeRecursively(view: View, type: Class<T>): T? {
 
 fun getDateMode(accountType: AccountType?, prefHandler: PrefHandler) = when {
     (accountType?.isCashAccount != true) &&
-            prefHandler.getBoolean(PrefKey.TRANSACTION_WITH_VALUE_DATE, false)
-        -> DateMode.BOOKING_VALUE
+        prefHandler.getBoolean(PrefKey.TRANSACTION_WITH_VALUE_DATE, false)
+    -> DateMode.BOOKING_VALUE
 
     prefHandler.getBoolean(PrefKey.TRANSACTION_WITH_TIME, true) -> DateMode.DATE_TIME
+
     else -> DateMode.DATE
 }
 
 private fun timeFormatter(accountType: AccountType?, prefHandler: PrefHandler, context: Context) =
     if (getDateMode(accountType, prefHandler) == DateMode.DATE_TIME) {
         DateFormat.getTimeFormat(context) as SimpleDateFormat
-    } else null
+    } else {
+        null
+    }
 
 val SimpleDateFormat.asDateTimeFormatter: DateTimeFormatter
     get() = DateTimeFormatter.ofPattern(this.toPattern())
@@ -165,12 +194,13 @@ fun dateTimeFormatter(account: PageAccount, prefHandler: PrefHandler, context: C
         else -> DateTimeFormatter.ofLocalizedDate(getNewDateFormatStyle(prefHandler))
     }
 
-private fun getNewDateFormatStyle(prefHandler: PrefHandler) = when (prefHandler.getString(PrefKey.CUSTOM_DATE_FORMAT_NEW_TRANSACTION_LIST)) {
-    "FULL" -> FormatStyle.FULL
-    "LONG" -> FormatStyle.LONG
-    "SHORT" -> FormatStyle.SHORT
-    else -> FormatStyle.MEDIUM
-}
+private fun getNewDateFormatStyle(prefHandler: PrefHandler) =
+    when (prefHandler.getString(PrefKey.CUSTOM_DATE_FORMAT_NEW_TRANSACTION_LIST)) {
+        "FULL" -> FormatStyle.FULL
+        "LONG" -> FormatStyle.LONG
+        "SHORT" -> FormatStyle.SHORT
+        else -> FormatStyle.MEDIUM
+    }
 
 fun dateTimeFormatterLegacy(account: PageAccount, prefHandler: PrefHandler, context: Context) =
     when (account.grouping) {
@@ -189,7 +219,9 @@ fun dateTimeFormatterLegacy(account: PageAccount, prefHandler: PrefHandler, cont
             }
 
         Grouping.WEEK -> SimpleDateFormat("EEE", Utils.localeFromContext(context)) to 2f
+
         Grouping.YEAR -> Utils.localizedYearLessDateFormat(context) to 3f
+
         Grouping.NONE -> Utils.ensureDateFormatWithShortYear(context) to 4.6f
     }
 
@@ -198,7 +230,7 @@ fun Spinner.checkNewAccountLimitation(prefHandler: PrefHandler, context: Context
         (selectedView as? TextView)?.let {
             it.error = ""
             it.setTextColor(Color.RED)
-            it.text = ContribFeature.ACCOUNTS_UNLIMITED.buildTrialString(context)
+            it.text = ContribFeature.ACCOUNTS_UNLIMITED.trialInfo(context)
         }
     }
 }
@@ -209,7 +241,7 @@ fun FloatingActionButton.setBackgroundTintList(color: Int) {
 }
 
 fun View.configurePopupAnchor(
-    infoText: CharSequence,
+    infoText: CharSequence
 ) {
     setOnClickListener {
         val host =
@@ -217,11 +249,12 @@ fun View.configurePopupAnchor(
         host.hideKeyboard()
         //noinspection InflateParams
         val infoTextView = LayoutInflater.from(host).inflate(R.layout.textview_info, null)
-                as TextView
+            as TextView
         PopupWindow(infoTextView).apply {
             isOutsideTouchable = true
             isFocusable = true
-            //without setting background drawable, popup does not close on back button or touch outside, on older API levels
+            // without setting background drawable, popup does not close on back button or touch
+            // outside, on older API levels
             setBackgroundDrawable(Color.TRANSPARENT.toDrawable())
             width = ViewGroup.LayoutParams.WRAP_CONTENT
             height = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -250,11 +283,15 @@ fun attachmentInfoMap(context: Context, withFile: Boolean = false): Map<Uri, Att
         when (uri.scheme) {
             "content" -> {
                 val contentDescription = uri.fileName(context)
-                val file = if (withFile) try {
-                    PictureDirHelper.getFileForUri(context, uri)
-                } catch (_: IllegalArgumentException) {
+                val file = if (withFile) {
+                    try {
+                        PictureDirHelper.getFileForUri(context, uri)
+                    } catch (_: IllegalArgumentException) {
+                        null
+                    }
+                } else {
                     null
-                } else null
+                }
                 contentResolver.getType(uri)?.let {
                     if (it.startsWith("image")) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -266,7 +303,9 @@ fun attachmentInfoMap(context: Context, withFile: Boolean = false): Map<Uri, Att
                                         uri,
                                         Size(size, size),
                                         null
-                                    ), contentDescription, file
+                                    ),
+                                    contentDescription,
+                                    file
                                 )
                             } catch (_: Exception) {
                                 null
@@ -299,9 +338,13 @@ fun attachmentInfoMap(context: Context, withFile: Boolean = false): Map<Uri, Att
                 val file = uri.pathSegments[1]
                 AttachmentInfo.of(
                     getMimeType(file),
-                    context.assets.open(file).use(BitmapFactory::decodeStream), file, null
+                    context.assets.open(file).use(BitmapFactory::decodeStream),
+                    file,
+                    null
                 )
-            } else null
+            } else {
+                null
+            }
 
             else -> null
         } ?: AttachmentInfo.of(
@@ -316,9 +359,10 @@ fun attachmentInfoMap(context: Context, withFile: Boolean = false): Map<Uri, Att
 fun Context.getActivity(): BaseActivity? = this as? BaseActivity
     ?: (this as? ContextWrapper)?.baseContext?.getActivity()
 
-
 fun preferredTimePickerBuilder(context: Context) = MaterialTimePicker.Builder()
-    .setTimeFormat(if (DateFormat.is24HourFormat(context)) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H)
+    .setTimeFormat(
+        if (DateFormat.is24HourFormat(context)) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
+    )
     .apply {
         context.injector.prefHandler().getInt(PrefKey.TIME_PICKER_INPUT_MODE, -1)
             .takeIf { it != -1 }
@@ -339,22 +383,28 @@ fun preferredDatePickerBuilder(context: Context) = MaterialDatePicker.Builder.da
 }
 
 fun Context.getAmountColor(sign: Int) =
-    if (sign == 0) readPrimaryTextColor(this) else
+    if (sign == 0) {
+        readPrimaryTextColor(this)
+    } else {
         ContextCompat.getColor(
             this,
-            if (sign == -1) R.color.colorExpense else R.color.colorIncome,
+            if (sign == -1) R.color.colorExpense else R.color.colorIncome
         )
+    }
 
 fun EditText.setHintForA11yOnly(hint: CharSequence) {
-    ViewCompat.setAccessibilityDelegate(this, object : AccessibilityDelegateCompat() {
-        override fun onInitializeAccessibilityNodeInfo(
-            host: View,
-            info: AccessibilityNodeInfoCompat,
-        ) {
-            super.onInitializeAccessibilityNodeInfo(host, info)
-            info.hintText = hint
+    ViewCompat.setAccessibilityDelegate(
+        this,
+        object : AccessibilityDelegateCompat() {
+            override fun onInitializeAccessibilityNodeInfo(
+                host: View,
+                info: AccessibilityNodeInfoCompat
+            ) {
+                super.onInitializeAccessibilityNodeInfo(host, info)
+                info.hintText = hint
+            }
         }
-    })
+    )
 }
 
 val Float.displayProgress
@@ -365,7 +415,9 @@ fun resolveThemeColor(context: Context, attr: Int): Int {
     val theme = context.theme
     if (theme.resolveAttribute(attr, typedValue, true)) {
         // Check if it's a direct color integer
-        if (typedValue.type >= TypedValue.TYPE_FIRST_INT && typedValue.type <= TypedValue.TYPE_LAST_INT) {
+        if (typedValue.type >= TypedValue.TYPE_FIRST_INT &&
+            typedValue.type <= TypedValue.TYPE_LAST_INT
+        ) {
             return typedValue.data // It's a direct color int
         } else if (typedValue.type == TypedValue.TYPE_STRING) {
             // It might be a ColorStateList resource

@@ -82,7 +82,6 @@ import org.totschnig.myexpenses.R;
 import org.totschnig.myexpenses.db2.entities.Template;
 import org.totschnig.myexpenses.model.CommodityType;
 import org.totschnig.myexpenses.model.CrStatus;
-import org.totschnig.myexpenses.model.CurrencyContext;
 import org.totschnig.myexpenses.model.CurrencyEnum;
 import org.totschnig.myexpenses.model.Grouping;
 import org.totschnig.myexpenses.model.PreDefinedPaymentMethod;
@@ -483,6 +482,7 @@ public class TransactionDatabase extends BaseTransactionDatabase {
 
     db.execSQL(PRICES_CREATE);
     db.execSQL(getPRIORITIZED_PRICES_CREATE());
+    createOrRefreshFts(db);
     super.onCreate(db);
   }
 
@@ -1261,9 +1261,15 @@ public class TransactionDatabase extends BaseTransactionDatabase {
         Cursor c = db.query("SELECT distinct currency from accounts");
         if (c.moveToFirst()) {
           while (!c.isAfterLast()) {
-            CurrencyContext currencyContext = MyApplication.Companion.getInstance().getAppComponent().currencyContext();
             String code = c.getString(0);
-            BaseTransactionProvider.Companion.storeFractionDigits(db, code, currencyContext.get(code).getFractionDigits());
+            int fractionDigits;
+            try {
+              fractionDigits = java.util.Currency.getInstance(code).getDefaultFractionDigits();
+              if (fractionDigits == -1) fractionDigits = 8;
+            } catch (Exception e) {
+              fractionDigits = 8;
+            }
+            getPrefHandler().putInt(code + "CustomFractionDigits", fractionDigits);
             c.moveToNext();
           }
         }
@@ -2123,6 +2129,14 @@ public class TransactionDatabase extends BaseTransactionDatabase {
 
       if (oldVersion < 190) {
         upgradeTo190(db);
+      }
+
+      if (oldVersion < 191) {
+        upgradeTo191(db);
+      }
+
+      if (oldVersion < 192) {
+        upgradeTo192(db);
       }
 
       TransactionProvider.resumeChangeTrigger(db);

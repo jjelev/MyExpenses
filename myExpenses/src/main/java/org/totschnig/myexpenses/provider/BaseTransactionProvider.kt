@@ -332,7 +332,7 @@ abstract class BaseTransactionProvider : ContentProvider() {
             KEY_DISPLAY_AMOUNT -> if (expandDisplayAmount)
                 "${getAmountHomeEquivalent(table, homeCurrency)} AS $it" else it
 
-            KEY_HAS_SEALED_DEBT -> "MAX(${checkForSealedDebt(table)})"
+            KEY_HAS_SEALED_DEBT -> "MAX(${checkForSealedDebt(table, TABLE_TRANSACTIONS)})"
             KEY_HAS_SEALED_ACCOUNT -> """
                 MAX(${checkForSealedAccount(table, TABLE_TRANSACTIONS, false)})
                 """.trimIndent()
@@ -1156,6 +1156,30 @@ abstract class BaseTransactionProvider : ContentProvider() {
         )
     }
 
+    fun getDatabaseInfo(): Bundle {
+        val db = helper.readableDatabase
+        val sqliteVersion = try {
+            db.query("SELECT sqlite_version()").use { cursor ->
+                if (cursor.moveToFirst()) cursor.getString(0) else "Unknown"
+            }
+        } catch (_: Exception) {
+            "Unknown"
+        }
+
+        val cipherVersion = try {
+            db.query("PRAGMA cipher_version").use { cursor ->
+                if (cursor.moveToFirst() && !cursor.isNull(0)) cursor.getString(0) else null
+            }
+        } catch (_: Exception) {
+            null
+        }
+
+        return Bundle(2).apply {
+            putString(TransactionProvider.KEY_SQLITE_VERSION, sqliteVersion)
+            putString(TransactionProvider.KEY_CIPHER_VERSION, cipherVersion)
+        }
+    }
+
     private fun decrypt(currentDb: File, backupDir: File): Result<Unit> {
         val backupDb = getBackupDbFile(backupDir)
         DataModule.cryptProvider.decrypt(context!!, currentDb, backupDb)
@@ -1923,9 +1947,7 @@ abstract class BaseTransactionProvider : ContentProvider() {
                 put(KEY_COLOR, category.color.takeIf { it != 0 } ?: suggestNewCategoryColor(db))
             }
             put(KEY_ICON, category.icon)
-            if (category.id == null) {
-                put(KEY_PARENTID, category.parentId)
-            }
+            put(KEY_PARENTID, category.parentId)
             if (category.parentId == null) {
                 put(KEY_TYPE, (category.type ?: FLAG_NEUTRAL))
             }
@@ -2262,7 +2284,8 @@ abstract class BaseTransactionProvider : ContentProvider() {
             add(KEY_CURRENCY)
             add(KEY_METHOD_LABEL)
             add("$dynamicExchangeRatesDefault AS $KEY_DYNAMIC")
-            add("${checkForSealedAccount(baseTable, TABLE_TEMPLATES, true)} AS $KEY_SEALED")
+            add("${checkForSealedAccount(baseTable, TABLE_TEMPLATES, true)} AS $KEY_HAS_SEALED_ACCOUNT")
+            add("${checkForSealedDebt(baseTable, TABLE_TEMPLATES)} AS $KEY_HAS_SEALED_DEBT")
         }
     }.toTypedArray()
 

@@ -12,8 +12,5 @@
     <string name="whats_new_401">Lista de tranzacții afișează acum mai multe detalii pentru tranzacțiile împărțite.</string>
     <string name="whats_new_402">Tipurile de conturi pot fi personalizate</string>
     <string name="whats_new_403">Indicatoarele de cont extind personalizarea vizibilității și priorității contului.</string>
-    <string name="migration_v2_opt_out_warning">Ne-ar plăcea să știm ce nu funcționează ca să putem îmbunătăți V2.</string>
-    <string name="migration_v2_feedback_title">Ce nu funcționează în V2?</string>
-    <string name="migration_v2_confirm_opt_out">Întoarce-te la V1</string>
     <string name="whats_new_407">Sortare naturală pentru etichete, categorii, conturi și părți.</string>
 </resources>

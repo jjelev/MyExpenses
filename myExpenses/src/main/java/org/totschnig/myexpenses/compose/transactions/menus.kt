@@ -3,19 +3,17 @@ package org.totschnig.myexpenses.compose.transactions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.SortByAlpha
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import org.totschnig.myexpenses.R
 import org.totschnig.myexpenses.compose.CheckableMenuEntry
 import org.totschnig.myexpenses.compose.MenuEntry
+import org.totschnig.myexpenses.compose.OverFlowMenu
 import org.totschnig.myexpenses.compose.SubMenuEntry
-import org.totschnig.myexpenses.compose.TEST_TAG_OVERFLOW_MENU
+import org.totschnig.myexpenses.compose.TEST_TAG_OVERFLOW_MENU_TRANSACTIONS
 import org.totschnig.myexpenses.compose.TooltipIconMenu
 import org.totschnig.myexpenses.compose.UiText
 import org.totschnig.myexpenses.compose.main.AppEvent
@@ -111,10 +109,8 @@ fun ActionMenu(
     isChecked: @Composable (MenuItem) -> Boolean
 ) {
     if (items.isNotEmpty()) {
-        TooltipIconMenu(
-            modifier = Modifier.testTag(TEST_TAG_OVERFLOW_MENU),
-            imageVector = Icons.Default.MoreVert,
-            tooltip = stringResource(R.string.actions),
+        OverFlowMenu(
+            testTag = TEST_TAG_OVERFLOW_MENU_TRANSACTIONS,
             menu = items
                 .map {
                     when {

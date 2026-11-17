@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="whats_new_361_1">La liste des opérations peut être triée par montant.</string>
-    <string name="whats_new_361_2">Les fichiers dans le dossier d\'application (sauvegardes et exportations) peuvent être partagés ou supprimés.</string>
-    <string name="whats_new_364_2">Nouvelle stratégie pour la gestion des tiers doublons</string>
-    <string name="whats_new_364_1">Importer vers plusieurs comptes à partir d\'un fichier CSV</string>
-    <string name="whats_new_365">Joindre un nombre arbitraire d\'images et de documents (PDF)</string>
-    <string name="whats_new_366">Widget de l’écran d’accueil affichant l’état actuel du budget.</string>
-    <string name="whats_new_367">Les catégories peuvent désormais être configurées en tant que catégories de dépenses ou de revenus, ce qui aura un impact sur le calcul des totaux des dépenses et des revenus.</string>
-    <string name="whats_new_369_1">Les transferts peuvent être associés à des catégories.</string>
-    <string name="whats_new_369_2">Lorsque le verrouillage de l\'écran est activé, permettez les captures d\'écran.</string>
-    <string name="whats_new_370">Le menu sur l’écran principal peut être entièrement personnalisé.</string>
-    <string name="whats_new_374">Couleurs personnalisées pour les étiquettes</string>
-    <string name="whats_new_376_1">Clonez plusieurs opérations avec une nouvelle date.</string>
-    <string name="whats_new_376_2">L\'interface utilisateur Web peut être contrôlée depuis l\'écran principal.</string>
-    <string name="whats_new_378">Les graphiques honorent le filtre de recherche.</string>
     <string name="whats_new_382">La fonctionnalité %1$s peut être appelée à partir du widget %2$s.</string>
     <string name="whats_new_384">Configuration simplifiée de la sauvegarde dans le cloud</string>
     <string name="whats_new_386">La répartition par dépenses et la répartition par revenu peuvent être affichées ensemble dans un graphique à double anneau.</string>
@@ -27,18 +13,8 @@
     <string name="whats_new_401">La liste des transactions affiche désormais plus de détails pour les opérations ventilées.</string>
     <string name="whats_new_402">Les types de comptes peuvent être personnalisés</string>
     <string name="whats_new_403">Les indicateurs de compte étendent la personnalisation de la visibilité et de la priorité des comptes.</string>
-    <string name="migration_v2_opt_out_warning">Nous aimerions savoir ce qui ne fonctionne pas afin d\'améliorer la version V2.</string>
-    <string name="migration_v2_feedback_title">Qu\'est-ce qui ne fonctionne pas dans la V2 ?</string>
-    <string name="migration_v2_confirm_opt_out">Retourner à V1</string>
     <string name="whats_new_407">Tri naturel pour étiquettes, catégories, comptes, tiers.</string>
     <string name="whats_new_411_1">Transferts ventilés</string>
     <string name="whats_new_411_2">Transferts d’actifs entre portefeuilles</string>
     <string name="whats_new_411_3">Écran d’historique pour les comptes agrégés reflète désormais la variation de la valeur des devises étrangères</string>
-    <string name="sunset_v1_intro">Ceci est la dernière version avec V1. Elle sera supprimée dans la version 4.1.3.</string>
-    <string name="sunset_v1_message_1_intro">Aidez-nous à améliorer la V2 :</string>
-    <string name="sunset_v1_message_2_intro">Fonctionnalités exclusives de la V2 :</string>
-    <string name="sunset_v1_message_2_body">Découvrez de nouveaux outils disponibles uniquement dans la V2, tels que le suivi des portefeuilles d\'investissement.</string>
-    <string name="sunset_v1_message_3_intro">Rester sur V1 :</string>
-    <string name="sunset_v1_message_3_body">Pour continuer à utiliser V1, veuillez désactiver les mises à jour automatiques pour {app_name} dans {store}.</string>
-    <string name="switch_to_v2">Passer à la V2</string>
 </resources>

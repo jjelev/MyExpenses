@@ -586,7 +586,6 @@
     <string name="licence_has_expired_n_days">ನಿಮ್ಮ ವೃತ್ತಿಪರ ಕೀಲಿಯು %d ದಿನಗಳ ಹಿಂದೆ ಅವಧಿ ಮೀರಿದೆ.</string>
     <string name="gdpr_consent_button_no">ಜಾಹೀರಾತು-ಮುಕ್ತ ಆವೃತ್ತಿಗೆ ಪಾವತಿಸಿ</string>
     <string name="sort_order">ವಿಂಗಡಣೆ ಆದೇಶ</string>
-    <string name="navigation_drawer_accounts_title">ಖಾತೆಗಳನ್ನು ನಿರ್ವಹಿಸಿ</string>
     <string name="pref_sync_wifi_only_summary">ವೈ-ಫೈನಲ್ಲಿರುವಾಗ ಮಾತ್ರ ಸಿಂಕ್ ಮಾಡಿ</string>
     <string name="pref_sync_changes_immediately_summary">ಸ್ಥಳೀಯ ಬದಲಾವಣೆಗಳನ್ನು ತಕ್ಷಣ ಬ್ಯಾಕೆಂಡ್‌ಗೆ ಬರೆಯಿರಿ</string>
     <string name="synchronization_postponed">ಸಿಂಕ್ರೊನೈಸೇಶನ್ ಮುಂದೂಡಲ್ಪಟ್ಟಿದೆ.</string>
@@ -837,4 +836,9 @@
     <string name="pref_account_list_display_configuration_title">ಖಾತೆ ಪಟ್ಟಿ</string>
     <string name="menu_templates">ಟೆಂಪ್ಲೇಟ್ ಗಳು</string>
     <string name="important_upgrade_information_heading">ಪ್ರಮುಖ ಮಾಹಿತಿ</string>
+    <string name="pref_tag_style_title">ಟ್ಯಾಗ್ ಶೈಲಿ</string>
+    <string name="pref_tag_style_outline">ಬಣ್ಣದ ಗಡಿ</string>
+    <string name="pref_tag_style_filled">ಪೂರ್ಣ ಬಣ್ಣದ</string>
+    <string name="trade_additional_costs">ಹೆಚ್ಚುವರಿ ವೆಚ್ಚಗಳು</string>
+    <string name="contrib_feature_portfolio_tracking">ಪೋರ್ಟ್‌ಫೋಲಿಯೊ ಟ್ರ್ಯಾಕಿಂಗ್</string>
 </resources>

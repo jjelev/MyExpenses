@@ -48,8 +48,6 @@ import org.totschnig.myexpenses.compose.isTablet
 import org.totschnig.myexpenses.compose.optional
 import org.totschnig.myexpenses.compose.rememberMutableStateListOf
 import org.totschnig.myexpenses.compose.scrollbar.LazyColumnWithScrollbar
-import org.totschnig.myexpenses.dialog.MenuItem.MenuContext.V1
-import org.totschnig.myexpenses.dialog.MenuItem.MenuContext.V2
 import org.totschnig.myexpenses.preference.EnumPreferenceAccessor
 import org.totschnig.myexpenses.preference.menu
 import org.totschnig.myexpenses.preference.persistMenu
@@ -66,23 +64,11 @@ class CustomizeMenuDialogFragment : ComposeBaseDialogFragment3() {
     override val title: CharSequence
         get() = getString(R.string.menu) + " : " + menuContext.title(requireContext())
 
-    suspend fun loadConfiguration(menuContext: MenuItem.MenuContext): List<MenuItem> {
-        return when (menuContext) {
-            V1 -> prefHandler.getCustomMenuV1()
-            is V2 -> dataStore.menu(menuContext).first()
-                ?: MenuItem.getDefaultConfiguration(menuContext)
-        }
-    }
+    suspend fun loadConfiguration(menuContext: MenuItem.MenuContext) =
+        dataStore.menu(menuContext).first() ?: MenuItem.getDefaultConfiguration(menuContext)
 
     suspend fun saveConfiguration(menuContext: MenuItem.MenuContext, data: List<MenuItem>) {
-        when (menuContext) {
-            is V1 -> prefHandler.putOrderedStringSet(
-                menuContext.prefKey,
-                LinkedHashSet(data.map { it.name })
-            )
-
-            is V2 -> dataStore.persistMenu(menuContext, data)
-        }
+        dataStore.persistMenu(menuContext, data)
     }
 
     val navigationModeAccessor by lazy {
@@ -94,9 +80,11 @@ class CustomizeMenuDialogFragment : ComposeBaseDialogFragment3() {
     }
 
     val menuContext: MenuItem.MenuContext
-        get() = arguments?.let {
-            BundleCompat.getParcelable(it, KEY_CONTEXT, MenuItem.MenuContext::class.java)
-        } ?: V1
+        get() = BundleCompat.getParcelable(
+            requireArguments(),
+            KEY_CONTEXT,
+            MenuItem.MenuContext::class.java
+        )!!
 
     @Composable
     override fun ColumnScope.MainContent() {
@@ -174,7 +162,7 @@ class CustomizeMenuDialogFragment : ComposeBaseDialogFragment3() {
     companion object {
         const val KEY_CONTEXT = "context"
 
-        fun newInstance(menuContext: MenuItem.MenuContext = V1) =
+        fun newInstance(menuContext: MenuItem.MenuContext) =
             CustomizeMenuDialogFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(KEY_CONTEXT, menuContext)

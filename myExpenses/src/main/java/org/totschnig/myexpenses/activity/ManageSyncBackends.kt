@@ -14,6 +14,7 @@ import org.totschnig.myexpenses.dialog.ConfirmationDialogFragment
 import org.totschnig.myexpenses.dialog.SetupSyncDialogFragment
 import org.totschnig.myexpenses.fragment.SyncBackendList
 import org.totschnig.myexpenses.model.ContribFeature
+import org.totschnig.myexpenses.model.ContribPayload
 import org.totschnig.myexpenses.preference.PrefKey
 import org.totschnig.myexpenses.provider.KEY_SYNC_ACCOUNT_NAME
 import org.totschnig.myexpenses.provider.KEY_UUID
@@ -23,7 +24,6 @@ import org.totschnig.myexpenses.sync.SyncBackendProviderFactory.Companion.ACTION
 import org.totschnig.myexpenses.util.safeMessage
 import org.totschnig.myexpenses.viewmodel.AccountSealedException
 import org.totschnig.myexpenses.viewmodel.SyncViewModel.SyncAccountData
-import java.io.Serializable
 
 class ManageSyncBackends : SyncBackendSetupActivity(), ContribIFace {
 
@@ -85,7 +85,10 @@ class ManageSyncBackends : SyncBackendSetupActivity(), ContribIFace {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (getBackendServiceById(item.itemId) != null) {
-            contribFeatureRequested(ContribFeature.SYNCHRONIZATION, item.itemId)
+            contribFeatureRequested(
+                ContribFeature.SYNCHRONIZATION,
+                ContribPayload.Synchronization(item.itemId)
+            )
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -115,7 +118,13 @@ class ManageSyncBackends : SyncBackendSetupActivity(), ContribIFace {
                 syncViewModel.syncLinkLocal(uuid, syncAccountName).observe(this) { result ->
                     result.onFailure {
                         showSnackBar(
-                            if (it is AccountSealedException) getString(R.string.object_sealed) else it.safeMessage
+                            if (it is AccountSealedException) {
+                                getString(
+                                    R.string.object_sealed
+                                )
+                            } else {
+                                it.safeMessage
+                            }
                         )
                     }
                 }
@@ -161,44 +170,52 @@ class ManageSyncBackends : SyncBackendSetupActivity(), ContribIFace {
         when (command) {
             R.id.SYNC_LINK_COMMAND_LOCAL -> {
                 val (uuid, syncAccountName) = tag as Pair<String, String>
-                ConfirmationDialogFragment.newInstance(Bundle().apply {
-                    putString(
-                        ConfirmationDialogFragment.KEY_MESSAGE,
-                        this@ManageSyncBackends.getString(R.string.dialog_confirm_sync_link_local)
-                    )
-                    putInt(
-                        ConfirmationDialogFragment.KEY_COMMAND_POSITIVE,
-                        R.id.SYNC_LINK_COMMAND_LOCAL_DO
-                    )
-                    putInt(
-                        ConfirmationDialogFragment.KEY_POSITIVE_BUTTON_LABEL,
-                        R.string.dialog_command_sync_link_local
-                    )
-                    putString(KEY_UUID, uuid)
-                    putString(KEY_SYNC_ACCOUNT_NAME, syncAccountName)
-                })
+                ConfirmationDialogFragment.newInstance(
+                    Bundle().apply {
+                        putString(
+                            ConfirmationDialogFragment.KEY_MESSAGE,
+                            this@ManageSyncBackends.getString(
+                                R.string.dialog_confirm_sync_link_local
+                            )
+                        )
+                        putInt(
+                            ConfirmationDialogFragment.KEY_COMMAND_POSITIVE,
+                            R.id.SYNC_LINK_COMMAND_LOCAL_DO
+                        )
+                        putInt(
+                            ConfirmationDialogFragment.KEY_POSITIVE_BUTTON_LABEL,
+                            R.string.dialog_command_sync_link_local
+                        )
+                        putString(KEY_UUID, uuid)
+                        putString(KEY_SYNC_ACCOUNT_NAME, syncAccountName)
+                    }
+                )
                     .show(supportFragmentManager, "SYNC_LINK_LOCAL")
                 return true
             }
 
             R.id.SYNC_LINK_COMMAND_REMOTE -> {
                 val (uuid, syncAccountName) = tag as Pair<String, String>
-                ConfirmationDialogFragment.newInstance(Bundle().apply {
-                    putString(
-                        ConfirmationDialogFragment.KEY_MESSAGE,
-                        this@ManageSyncBackends.getString(R.string.dialog_confirm_sync_link_remote)
-                    )
-                    putInt(
-                        ConfirmationDialogFragment.KEY_COMMAND_POSITIVE,
-                        R.id.SYNC_LINK_COMMAND_REMOTE_DO
-                    )
-                    putInt(
-                        ConfirmationDialogFragment.KEY_POSITIVE_BUTTON_LABEL,
-                        R.string.dialog_command_sync_link_remote
-                    )
-                    putString(KEY_UUID, uuid)
-                    putString(KEY_SYNC_ACCOUNT_NAME, syncAccountName)
-                })
+                ConfirmationDialogFragment.newInstance(
+                    Bundle().apply {
+                        putString(
+                            ConfirmationDialogFragment.KEY_MESSAGE,
+                            this@ManageSyncBackends.getString(
+                                R.string.dialog_confirm_sync_link_remote
+                            )
+                        )
+                        putInt(
+                            ConfirmationDialogFragment.KEY_COMMAND_POSITIVE,
+                            R.id.SYNC_LINK_COMMAND_REMOTE_DO
+                        )
+                        putInt(
+                            ConfirmationDialogFragment.KEY_POSITIVE_BUTTON_LABEL,
+                            R.string.dialog_command_sync_link_remote
+                        )
+                        putString(KEY_UUID, uuid)
+                        putString(KEY_SYNC_ACCOUNT_NAME, syncAccountName)
+                    }
+                )
                     .show(supportFragmentManager, "SYNC_LINK_REMOTE")
                 return true
             }
@@ -207,13 +224,14 @@ class ManageSyncBackends : SyncBackendSetupActivity(), ContribIFace {
         }
     }
 
-
     override fun onReceiveSyncAccountData(data: SyncAccountData) {
         GenericAccountService.activateSync(data.accountName, prefHandler)
         listFragment.reloadAccountList()
-        if (callingActivity == null && (data.localAccountsNotSynced.isNotEmpty() || data.remoteAccounts.isNotEmpty())) {
-            //if we were called from AccountEdit, we do not show the setup account selection
-            //since we suppose that user wants to create one account for the account he is editing
+        if (callingActivity == null &&
+            (data.localAccountsNotSynced.isNotEmpty() || data.remoteAccounts.isNotEmpty())
+        ) {
+            // if we were called from AccountEdit, we do not show the setup account selection
+            // since we suppose that user wants to create one account for the account he is editing
             SetupSyncDialogFragment.newInstance(data).show(supportFragmentManager, "SETUP_SYNC")
         }
     }
@@ -244,11 +262,5 @@ class ManageSyncBackends : SyncBackendSetupActivity(), ContribIFace {
             return true
         }
         return super.onContextItemSelected(item)
-    }
-
-    override fun contribFeatureCalled(feature: ContribFeature, tag: Serializable?) {
-        if (tag is Int) {
-            startSetup(tag)
-        }
     }
 }

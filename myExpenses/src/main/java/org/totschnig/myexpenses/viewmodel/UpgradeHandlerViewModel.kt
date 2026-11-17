@@ -32,7 +32,6 @@ import org.totschnig.myexpenses.db2.getGrouping
 import org.totschnig.myexpenses.db2.preDefinedName
 import org.totschnig.myexpenses.db2.updatePlan
 import org.totschnig.myexpenses.dialog.MenuItem
-import org.totschnig.myexpenses.dialog.name
 import org.totschnig.myexpenses.model.AccountGrouping
 import org.totschnig.myexpenses.model.CrStatus
 import org.totschnig.myexpenses.model.CurrencyEnum
@@ -610,12 +609,6 @@ class UpgradeHandlerViewModel(application: Application) :
                     }
                 }
 
-                if (fromVersion < 754) {
-                    prefHandler.getOrderedStringSet(PrefKey.CUSTOMIZE_MAIN_MENU)?.let {
-                        prefHandler.putOrderedStringSet(PrefKey.CUSTOMIZE_MAIN_MENU,it + MenuItem.Archive.name)
-                    }
-                }
-
                 if (fromVersion < 774) {
                     prefHandler.getString("exchange_rate_provider")?.let {
                         prefHandler.putStringSet(PrefKey.EXCHANGE_RATE_PROVIDER, setOf(it))
@@ -682,6 +675,10 @@ class UpgradeHandlerViewModel(application: Application) :
                     if (currentMenu != null && !currentMenu.contains(MenuItem.Help)) {
                         dataStore.persistMenu(menuContext, currentMenu + MenuItem.Help)
                     }
+                }
+
+                if (fromVersion < 888 && prefHandler.encryptDatabase && prefHandler.getInt(PrefKey.FIRST_INSTALL_DB_SCHEMA_VERSION, -1) > 176) {
+                    migrationInfos.add(MigrationInfo(2))
                 }
 
                 prefHandler.putInt(PrefKey.CURRENT_VERSION, toVersion)
