@@ -2,7 +2,6 @@ apply plugin: "com.android.dynamic-feature"
 
 android {
     namespace 'org.totschnig.mlkit'
-    compileSdkVersion project.compileSdkVersion
 
     defaultConfig {
         missingDimensionStrategy 'textRecognition', 'intern'
@@ -24,7 +23,5 @@ dependencies {
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
     androidTestImplementation libs.androidx.annotation
-    api libs.play.services.mlkit.text.recognition.common
-    api libs.text.recognition.bundled.common
     implementation libs.kotlin.reflect
 }

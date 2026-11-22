@@ -13,12 +13,27 @@ plugins {
 }
 
 ext {
-    resConfig = ['en', 'en-rGB', 'ar', 'be', 'bg', 'bn', 'ca', 'cs', 'da', 'de', 'de-rDE', 'el', 'es', 'eu', 'fr', 'fr-rCA', "in", 'iw', 'hr', 'hu', 'it', 'ja', 'km', 'kn', 'ko', 'ms', 'nl', 'pl', 'pt-rBR', 'pt-rPT', 'ro', 'ru', 'si', 'sv', 'ta', 'te', 'th', 'tr', 'uk', 'ur', 'vi', 'zh-rCN', 'zh-rHK', 'zh-rTW']
-    versionCode = 892
-    versionName = '4.1.4'
+    resConfig = ['en', 'en-rGB', 'ar', 'be', 'bg', 'bn', 'ca', 'cs', 'da', 'de', 'de-rDE', 'el', 'es', 'eu', 'fa', 'fr', 'fr-rCA', "in", 'iw', 'hr', 'hu', 'it', 'ja', 'km', 'kn', 'ko', 'ms', 'nl', 'pl', 'pt-rBR', 'pt-rPT', 'ro', 'ru', 'si', 'sv', 'ta', 'te', 'th', 'tr', 'uk', 'ur', 'vi', 'zh-rCN', 'zh-rHK', 'zh-rTW']
+    versionCode = 895
+    versionName = '4.1.5'
     compileSdkVersion = 37
+    compileSdkMinorVersion = 2
     minSdkVersion = 26
     targetSdkVersion = 36
+}
+
+subprojects {
+    ['com.android.application', 'com.android.library', 'com.android.dynamic-feature'].each { pluginId ->
+        pluginManager.withPlugin(pluginId) {
+            android {
+                compileSdk {
+                    version = release(rootProject.compileSdkVersion) {
+                        it.minorApiLevel = rootProject.compileSdkMinorVersion
+                    }
+                }
+            }
+        }
+    }
 }
 
 allprojects { // Or subprojects {
